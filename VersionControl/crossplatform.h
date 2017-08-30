@@ -6,9 +6,7 @@
 // First, a shim for mkdir
 #if defined(_WIN32)
 #include <direct.h>
-int mkdir(const char* dirname) {
-	return _mkdir(dirname);
-}
+#define mkdir(dirname) _mkdir((dirname))
 #else
 #include <sys/stat.h>
 #endif
