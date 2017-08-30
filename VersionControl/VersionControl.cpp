@@ -1,11 +1,13 @@
 // VersionControl.cpp : Defines the entry point for the console application.
 //
 
+#include "crossplatform.h"
 #include "../PicoSHA2/picosha2.h"
 
 #include <iostream>
 #include <cstdint>
 #include <cstdlib>
+#include <fstream>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
 enum class Command : uint8_t { unknownCommand, init, add, commit };
@@ -83,6 +85,12 @@ int main(int argc, char* argv[]) {
 	}
 	else {
 		usage(argv[0], Command::unknownCommand);
+	}
+	
+	// First, the easiest and always-run command: init.
+	// Initialize all the files the other commands assume to exist.
+	if (mode == Command::init) {
+		mkdir(".vcs");
 	}
 
 	return 0;
