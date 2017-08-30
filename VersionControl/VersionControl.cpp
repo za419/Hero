@@ -8,7 +8,7 @@
 #include <cstdlib>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
-enum class Command : uint8_t {unknownCommand, init, add, commit};
+enum class Command : uint8_t { unknownCommand, init, add, commit };
 
 void usage(char* invoke, Command source) {
 	std::cout << "Usage:\n";
@@ -44,9 +44,36 @@ void usage(char* invoke, Command source) {
 }
 
 int main(int argc, char* argv[]) {
+	// First, argument handling.
 	if (argc < 2) {
 		usage(argv[0], Command::unknownCommand);
 	}
-    return 0;
+	else if (!strcmp(argv[1], "add")) {
+		if (argc == 2) {
+			std::cout << "No files to add.\n";
+			return 0;
+		}
+
+		if (!strcmp(argv[2], "-h")) {
+			usage(argv[0], Command::add);
+		}
+	}
+	else if (!strcmp(argv[1], "commit")) {
+		if (argc == 2) {
+			std::cout << "No files to add.\n";
+			return 0;
+		}
+
+		if (!strcmp(argv[2], "-h")) {
+			usage(argv[0], Command::commit);
+		}
+	}
+	else if (!strcmp(argv[1], "init")) {
+        if (argc>2) {
+            usage(argv[0], Command::init);
+        }
+    }
+
+	return 0;
 }
 
