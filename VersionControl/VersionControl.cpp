@@ -3,7 +3,7 @@
 
 #include "../PicoSHA2/picosha2.h"
 
-int main()
+int main(int argc, char* argv[])
 {
     return 0;
 }
