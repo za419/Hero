@@ -69,13 +69,13 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	else if (!strcmp(argv[1], "init")) {
-        if (argc>2) {
-            usage(argv[0], Command::init);
-        }
-    }
-    else {
-        usage(argv[0], Command::unknownCommand);
-    }
+		if (argc > 2) {
+			usage(argv[0], Command::init);
+		}
+	}
+	else {
+		usage(argv[0], Command::unknownCommand);
+	}
 
 	return 0;
 }
