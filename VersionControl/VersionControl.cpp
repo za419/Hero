@@ -11,11 +11,14 @@
 enum class Command : uint8_t {unknownCommand, init, add, commit};
 
 void usage(char* invoke, Command source) {
-	if (source == Command::unknownCommand) {
+	switch (source) {
+	case Command::unknownCommand:
+	default:
 		std::cout << "Usage:\n";
 		std::cout << invoke << " init\n";
 		std::cout << invoke << " add [files]\n";
 		std::cout << invoke << " commit [files] [-a]\n";
+		break;
 	}
 	exit(0);
 }
