@@ -73,6 +73,9 @@ int main(int argc, char* argv[]) {
             usage(argv[0], Command::init);
         }
     }
+    else {
+        usage(argv[0], Command::unknownCommand);
+    }
 
 	return 0;
 }
