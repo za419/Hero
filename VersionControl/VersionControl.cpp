@@ -91,6 +91,10 @@ int main(int argc, char* argv[]) {
 	// Initialize all the files the other commands assume to exist.
 	if (mode == Command::init) {
 		mkdir(".vcs");
+		mkdir(".vcs/index");
+		mkdir(".vcs/commits");
+
+		std::cout << "Initialized repository.\n";
 	}
 
 	return 0;
