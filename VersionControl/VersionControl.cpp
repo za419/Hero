@@ -19,6 +19,12 @@ void usage(char* invoke, Command source) {
 		std::cout << "Initializes a new repository in the current folder.\n";
 		std::cout << "No arguments are required or allowed.\n";
 		break;
+	case Command::add:
+		std::cout << invoke << " add [files]\n";
+		std::cout << "Adds a file or several files to the index, using their state on disk at the time of invocation.\n";
+		std::cout << "Accepts an arbitrary number of arguments, all of which must be files on disk to add (excepting \"-h\" to produce this output).\n";
+		std::cout << "Note that if added files are changed while this command is running, the index may be left in an inconsistent state.\n";
+		break;
 	case Command::unknownCommand:
 	default:
 		std::cout << invoke << " init\n";
