@@ -44,11 +44,15 @@ void usage(char* invoke, Command source) {
 }
 
 int main(int argc, char* argv[]) {
+	Command mode=Command::unknownCommand;
+
 	// First, argument handling.
 	if (argc < 2) {
 		usage(argv[0], Command::unknownCommand);
 	}
 	else if (!strcmp(argv[1], "add")) {
+		mode = Command::add;
+
 		if (argc == 2) {
 			std::cout << "No files to add.\n";
 			return 0;
@@ -59,6 +63,8 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	else if (!strcmp(argv[1], "commit")) {
+		mode = Command::commit;
+
 		if (argc == 2) {
 			std::cout << "No files to add.\n";
 			return 0;
@@ -69,6 +75,8 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	else if (!strcmp(argv[1], "init")) {
+		mode = Command::init;
+
 		if (argc > 2) {
 			usage(argv[0], Command::init);
 		}
