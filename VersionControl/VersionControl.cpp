@@ -11,10 +11,16 @@
 enum class Command : uint8_t {unknownCommand, init, add, commit};
 
 void usage(char* invoke, Command source) {
+	std::cout << "Usage:\n";
+
 	switch (source) {
+	case Command::init:
+		std::cout << invoke << " init\n";
+		std::cout << "Initializes a new repository in the current folder.\n";
+		std::cout << "No arguments are required or allowed.\n";
+		break;
 	case Command::unknownCommand:
 	default:
-		std::cout << "Usage:\n";
 		std::cout << invoke << " init\n";
 		std::cout << invoke << " add [files]\n";
 		std::cout << invoke << " commit [files] [-a]\n";
