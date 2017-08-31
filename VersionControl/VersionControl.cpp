@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstdint>
 #include <cstdlib>
+#include <cstdio>
 #include <fstream>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
@@ -95,6 +96,28 @@ int main(int argc, char* argv[]) {
 		mkdir(".vcs/commits");
 
 		std::cout << "Initialized repository.\n";
+	}
+	// Next up, add.
+	// Take the files specified on the commandline, and copy them to the index
+	else if (mode == Command::add) {
+		std::string tmp;
+		for (size_t i = 2; i < argc; ++i) {
+			tmp = argv[i];
+			tmp = ".vcs/index/" + tmp;
+			if (!copyfile(argv[i], tmp.c_str())) {
+				std::cout << "Error: Could not copy file " << argv[i] << ".\n";
+
+				remove(".vcs/index");
+
+				mkdir(".vcs/index");
+				std::cout << "Index emptied.\n";
+				std::cout << "Please re-add the appropriate files to the index.\n";
+
+				exit(1);
+			}
+		}
+
+		std::cout << "All files added to index.\n";
 	}
 
 	return 0;
