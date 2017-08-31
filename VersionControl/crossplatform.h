@@ -12,7 +12,6 @@
 #endif
 
 // Next, a function to copy files
-// Returns whether the operation succeeded
 #if defined(_WIN32)
 #include <Windows.h>
 #else
@@ -22,6 +21,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #endif
+// Returns whether the operation succeeded
 bool copyfile(const char* source, const char* dest) {
 #if defined(_WIN32)
 	return CopyFile(source, dest, false);
