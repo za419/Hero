@@ -1,0 +1,23 @@
+COMMIT HEADER
+&&&
+parent <SHA256>
+date <date committed, yyyy-mm-dd>
+time <time committed, hh:mm:ss, 24-hour>
+title <commit title>
+message &<commit message, with all '&' replaced by '&amp;'>&
+files <comma separated list of paths to files in commit, for -a>
+&&&&&
+<file path>
+checksum <SHA256>
+size <bytes>
+&&&
+<file contents, with all '&' replaced by '&amp;'>
+&&&&&
+
+repeat as needed
+
+COMMIT FOOTER
+&&&
+count <number of files>
+size <total size, bytes>
+&&&&&
