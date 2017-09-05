@@ -5,7 +5,7 @@ date <date committed, yyyy-mm-dd>
 time <time committed, hh:mm:ss, 24-hour>
 title <commit title>
 message &<commit message, with all '&' replaced by '&amp;'>&
-files <comma separated list of paths to files in commit, for -a>
+files [<comma separated list of paths to files in commit, for -a>]
 &&&&&
 <file path>
 checksum <SHA256>
