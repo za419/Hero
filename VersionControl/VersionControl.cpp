@@ -129,7 +129,7 @@ int main(int argc, char* argv[]) {
 
 		// Generate the hash of the commit
 		std::string contents = commit.str();
-		std::string hash = picosha2::bytes_to_hex_string(contents.begin(), contents.end());
+		std::string hash = picosha2::hash256_hex_string(contents);
 
 		// And write to the commit file
 		std::ofstream file(".vcs/commits/" + hash);
