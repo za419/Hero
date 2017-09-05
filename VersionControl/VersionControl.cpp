@@ -96,6 +96,12 @@ int main(int argc, char* argv[]) {
 		mkdir(".vcs/index");
 		mkdir(".vcs/commits");
 
+		// Make a plain initial commit marking repository creation
+		std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
+		commit << "COMMIT HEADER\n";
+		commit << "&&&\n";
+		commit << "parent 0\n";
+
 		std::cout << "Initialized repository.\n";
 	}
 	// Next up, add.
