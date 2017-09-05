@@ -182,6 +182,22 @@ int main(int argc, char* argv[]) {
 		std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
 		commit << "COMMIT HEADER\n";
 		commit << "&&&\n";
+
+		// Write parent hash
+		std::ifstream head(".vcs/HEAD");
+		std::string parent;
+		std::getline(head, parent);
+		head.close();
+		commit << "parent " << parent << "\n";
+
+		// Write datetime using date
+		// Examples taken from the date documentation: https://howardhinnant.github.io/date/date.html
+		auto today = date::year_month_day(date::floor<date::days>(std::chrono::system_clock::now())); // Get current date
+		commit << "date " << today << "\n";
+		auto clock = std::chrono::system_clock::now();
+		auto now = clock - date::floor<date::days>(clock);
+		auto time = date::make_time(date::floor<std::chrono::seconds>(now));
+		commit << "time " << time << "\n";
 	}
 
 	return 0;
