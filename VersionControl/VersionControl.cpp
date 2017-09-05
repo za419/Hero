@@ -1,8 +1,9 @@
 // VersionControl.cpp : Defines the entry point for the console application.
 //
 
-#include "crossplatform.h"
+#include "../date/date.h"
 #include "../PicoSHA2/picosha2.h"
+#include "crossplatform.h"
 
 #include <iostream>
 #include <cstdint>
