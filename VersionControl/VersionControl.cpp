@@ -180,6 +180,10 @@ int main(int argc, char* argv[]) {
 
 		// Write parent hash
 		std::ifstream head(".vcs/HEAD");
+		if (!head) {
+			std::cerr << "Could not find repository head - have you run " << argv[0] << " init?\n";
+			exit(1);
+		}
 		std::string parent;
 		std::getline(head, parent);
 		head.close();
