@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <fstream>
 #include <sstream>
+#include <chrono>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
 enum class Command : uint8_t { unknownCommand, init, add, commit };
@@ -98,10 +99,26 @@ int main(int argc, char* argv[]) {
 		mkdir(".vcs/commits");
 
 		// Make a plain initial commit marking repository creation
+		// First, the easy part.
 		std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
 		commit << "COMMIT HEADER\n";
 		commit << "&&&\n";
 		commit << "parent 0\n";
+
+		// Write datetime using date
+		// Examples taken from the date documentation: https://howardhinnant.github.io/date/date.html
+		auto today = date::year_month_day(date::floor<date::days>(std::chrono::system_clock::now())); // Get current date
+		commit << "date " << today << "\n";
+		auto clock = std::chrono::system_clock::now();
+		auto now = clock - date::floor<date::days>(clock);
+		auto time = date::make_time(date::floor<std::chrono::seconds>(now));
+		commit << "time " << time << "\n";
+
+		// Finish off the header
+		commit << "title Initial Commit\n";
+		commit << "message This commit marks the initialization of the repository.\n";
+		commit << "files []\n";
+		commit << "&&&&&\n";
 
 		std::cout << "Initialized repository.\n";
 	}
