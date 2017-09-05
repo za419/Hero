@@ -203,6 +203,11 @@ int main(int argc, char* argv[]) {
 		std::cout << "Commit title: ";
 		std::getline(std::cin, title);
 		commit << "title " << escaped(title, "&", "&amp;") << "\n";
+
+		// Do the same for the commit message
+		std::cout << "Commit message (type Ctrl-X then press enter to end):\n";
+		std::getline(std::cin, title, char(24));
+		commit << "message &" << escaped(title, "&", "&amp;") << "&\n";
 	}
 
 	return 0;
