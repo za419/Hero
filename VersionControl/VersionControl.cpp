@@ -4,6 +4,7 @@
 #include "../date/date.h"
 #include "../PicoSHA2/picosha2.h"
 #include "crossplatform.h"
+#include "Utils.h"
 
 #include <iostream>
 #include <cstdint>
@@ -198,10 +199,10 @@ int main(int argc, char* argv[]) {
 		auto time = date::make_time(date::floor<std::chrono::seconds>(now));
 		commit << "time " << time << "\n";
 
-		// Get commit title from the user and write to commit
+		// Get commit title from the user and write, escaped, to commit
 		std::cout << "Commit title: ";
 		std::getline(std::cin, title);
-		commit << "title " << title << "\n";
+		commit << "title " << escaped(title, "&", "&amp;") << "\n";
 	}
 
 	return 0;
