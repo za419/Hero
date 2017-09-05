@@ -71,11 +71,6 @@ int main(int argc, char* argv[]) {
 	else if (!strcmp(argv[1], "commit")) {
 		mode = Command::commit;
 
-		if (argc == 2) {
-			std::cout << "No files to add.\n";
-			return 0;
-		}
-
 		if (!strcmp(argv[2], "-h")) {
 			usage(argv[0], Command::commit);
 		}
