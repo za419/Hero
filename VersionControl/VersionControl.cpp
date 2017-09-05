@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <fstream>
+#include <sstream>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
 enum class Command : uint8_t { unknownCommand, init, add, commit };
@@ -118,6 +119,16 @@ int main(int argc, char* argv[]) {
 		}
 
 		std::cout << "All files added to index.\n";
+	}
+	// Finally (for now), commit.
+	// Copy the files in the index into a commit file in the commits folder
+	// This file will have its SHA256 as its filename, and will have formatting compatible with the format specified in commit-blob.txt
+	else if (mode == Command::commit) {
+		std::string title; // Commit title
+		std::string message; // Commit message
+		std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
+		commit << "COMMIT HEADER\n";
+		commit << "&&&\n";
 	}
 
 	return 0;
