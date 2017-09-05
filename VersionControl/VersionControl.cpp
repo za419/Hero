@@ -142,6 +142,10 @@ int main(int argc, char* argv[]) {
 
 		// Write the HEAD marker
 		std::ofstream head(".vcs/HEAD");
+		if (!head) {
+			std::cerr << "Could not initialize repository.\n";
+			exit(1);
+		}
 		head << hash << "\n";
 		head.close();
 
