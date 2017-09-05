@@ -120,6 +120,13 @@ int main(int argc, char* argv[]) {
 		commit << "files []\n";
 		commit << "&&&&&\n";
 
+		// Now, write the commit footer
+		commit << "COMMIT FOOTER\n";
+		commit << "&&&\n";
+		commit << "count 0\n";
+		commit << "size 0\n";
+		commit << "&&&&&\n";
+
 		std::cout << "Initialized repository.\n";
 	}
 	// Next up, add.
