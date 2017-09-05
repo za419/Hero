@@ -127,6 +127,15 @@ int main(int argc, char* argv[]) {
 		commit << "size 0\n";
 		commit << "&&&&&\n";
 
+		// Generate the hash of the commit
+		std::string contents = commit.str();
+		std::string hash = picosha2::bytes_to_hex_string(contents.begin(), contents.end());
+
+		// And write to the commit file
+		std::ofstream file(".vcs/commits/" + hash);
+		file.write(contents.c_str(), contents.size());
+		file.close();
+
 		std::cout << "Initialized repository.\n";
 	}
 	// Next up, add.
