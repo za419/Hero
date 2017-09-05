@@ -108,7 +108,7 @@ int main(int argc, char* argv[]) {
 		auto clock = std::chrono::system_clock::now();
 		auto now = clock - date::floor<date::days>(clock);
 		auto time = date::make_time(date::floor<std::chrono::seconds>(now));
-		commit << "time " << time << "\n";
+		commit << "time " << time << " UTC\n";
 
 		// Finish off the header
 		commit << "title Initial Commit\n";
@@ -199,7 +199,7 @@ int main(int argc, char* argv[]) {
 		auto clock = std::chrono::system_clock::now();
 		auto now = clock - date::floor<date::days>(clock);
 		auto time = date::make_time(date::floor<std::chrono::seconds>(now));
-		commit << "time " << time << "\n";
+		commit << "time " << time << "UTC\n";
 
 		// Get commit title from the user and write, escaped, to commit
 		std::cout << "Commit title: ";
