@@ -197,6 +197,11 @@ int main(int argc, char* argv[]) {
 		auto now = clock - date::floor<date::days>(clock);
 		auto time = date::make_time(date::floor<std::chrono::seconds>(now));
 		commit << "time " << time << "\n";
+
+		// Get commit title from the user and write to commit
+		std::cout << "Commit title: ";
+		std::getline(std::cin, title);
+		commit << "title " << title << "\n";
 	}
 
 	return 0;
