@@ -1,6 +1,9 @@
 // Crossplatform.h: Simple wrappers to increase cross-platform compatibility
 
 #ifndef CROSSPLATFORM_H
+#define CROSSPLATFORM_H
+#pragma once
+
 #include <cstdlib>
 
 // First, a shim for mkdir
