@@ -130,6 +130,7 @@ int main(int argc, char* argv[]) {
 		// And write to the commit file
 		std::ofstream file(".vcs/commits/" + hash);
 		if (!file) {
+			remove(".vcs");
 			std::cerr << "Could not initialize repository.\n";
 			exit(1);
 		}
@@ -139,6 +140,7 @@ int main(int argc, char* argv[]) {
 		// Write the HEAD marker
 		std::ofstream head(".vcs/HEAD");
 		if (!head) {
+			remove(".vcs");
 			std::cerr << "Could not initialize repository.\n";
 			exit(1);
 		}
