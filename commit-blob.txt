@@ -19,5 +19,5 @@ repeat as needed
 COMMIT FOOTER
 &&&
 count <number of files>
-size <total size, bytes>
+size <total size, bytes, of included files>
 &&&&&
