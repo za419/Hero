@@ -175,6 +175,9 @@
   <ItemGroup>
     <ClInclude Include="crossplatform.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\commit-blob.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
