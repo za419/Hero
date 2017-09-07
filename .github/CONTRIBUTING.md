@@ -4,6 +4,36 @@ First of all, I would like to welcome you to VersionControl. This is just a pers
 pet project, and I am hard-pressed to imagine it becoming a real competitor to
 something like Git, but I am happy to have you help me see what we can make it into.
 
+## Table of Contents
+
+ - [Developer Resources](#developer-resources)
+ 
+   - [Issue tracking](#issue-tracking)
+   
+   - [Documentation](#documentation)
+   
+   - [Communication](#communication)
+ 
+ - [Testing](#testing)
+ 
+ - [Development environment](#development-environment)
+ 
+ - [Change submission](#change-submission)
+ 
+ - [Bug reporting](#bug-reporting)
+ 
+ - [Feature requests](#feature-requests)
+ 
+ - [First bugs for contributors](#first-bugs-for-contributors)
+ 
+ - [Style guide and Conventions](#style-guide-and-conventions)
+ 
+ - [Project management](#project-management)
+   
+   - [Asking a question](#asking-a-question)
+   
+ - [Closing thoughts](#closing-thoughts)
+
 ## Developer Resources
 
 Because VersionControl is currently a very small project, there isn't a great deal
@@ -149,7 +179,7 @@ With regards to the code, the easiest bugs to fix will generally be those
 regarding the handling of information provided in well-defined formats. Examples
 include command-line arguments, or handling well-formed commits.
 
-## Style guide/Conventions
+## Style guide and Conventions
 
 Generally, the style is as formatted by Visual Studio by default. Opening braces
 are usually left on the same line as their conditional, blocks of code are
