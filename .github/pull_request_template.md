@@ -31,4 +31,4 @@ If this pull request manages to destroy everything, including but not limited to
  - Life, the Universe, and Everything
  
 I acknowledge that I shall be ridiculed, possibly publicly (for whichever definition 
-of the public survives the collapse of civilization).
+of the public survives the ensuing catastrophe).
