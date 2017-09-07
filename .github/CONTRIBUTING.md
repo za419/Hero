@@ -1,4 +1,4 @@
-# Contributing Guidelines
+# Contribution Guidelines
 
 First of all, I would like to welcome you to VersionControl. This is just a personal
 pet project, and I am hard-pressed to imagine it becoming a real competitor to
