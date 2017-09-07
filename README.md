@@ -8,6 +8,12 @@ Also depends on [date](https://github.com/HowardHinnant/date) for generating
 timestamps - This is also added as a submodule.
 
 ## Contributing
+
+Before contributing, please read the [Code of Conduct](CODE_OF_CONDUCT.md) and 
+the [Contribution Guidelines](.github/CONTRIBUTING.md).
+
+### Submodules
+
 To contribute to VersionControl, please note that git submodules are used in the
 project. This means that in order to properly clone it, you should pass
 `--recursive` to `git clone`, or alternatively you should run these two commands
