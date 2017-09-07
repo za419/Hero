@@ -7,32 +7,34 @@ something like Git, but I am happy to have you help me see what we can make it i
 ## Table of Contents
 
  - [Developer Resources](#developer-resources)
- 
+
    - [Issue tracking](#issue-tracking)
-   
+
    - [Documentation](#documentation)
-   
+
    - [Communication](#communication)
- 
+
  - [Testing](#testing)
- 
+
  - [Development environment](#development-environment)
- 
+
  - [Change submission](#change-submission)
- 
+
  - [Bug reporting](#bug-reporting)
- 
+
  - [Feature requests](#feature-requests)
- 
+
  - [First bugs for contributors](#first-bugs-for-contributors)
- 
+
  - [Style guide and Conventions](#style-guide-and-conventions)
- 
+
  - [Project management](#project-management)
-   
+
    - [Asking a question](#asking-a-question)
-   
+
  - [Closing thoughts](#closing-thoughts)
+
+-----
 
 ## Developer Resources
 
