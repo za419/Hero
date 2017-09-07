@@ -27,6 +27,8 @@ something like Git, but I am happy to have you help me see what we can make it i
  - [First bugs for contributors](#first-bugs-for-contributors)
 
  - [Style guide and Conventions](#style-guide-and-conventions)
+ 
+ - [Code of Conduct](#code-of-conduct)
 
  - [Project management](#project-management)
 
@@ -213,6 +215,10 @@ should be small enough to be inlined.
 implemented differently on different platforms.
 
 Other conventions should be noted here as they are developed.
+
+## Code of Conduct
+
+See the [Code of Conduct](../CODE_OF_CONDUCT.md).
 
 ## Project management
 
