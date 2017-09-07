@@ -154,9 +154,8 @@ include command-line arguments, or handling well-formed commits.
 Generally, the style is as formatted by Visual Studio by default. Opening braces
 are usually left on the same line as their conditional, blocks of code are
 indented relative to their surroundings, and trailing whitespace is cleared. To
-facilitate compliance with this, I use [Power Commands for Visual
-Studio](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.
-PowerCommandsforVisualStudio), and enable the 'Format document on save' option.
+facilitate compliance with this, I use [Power Commands for Visual Studio](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.PowerCommandsforVisualStudio),
+and enable the 'Format document on save' option.
 
 In general, try to comply with the style of surrounding code. Unless your code is
 styled completely horribly, I will not reject it on a stylistic basis: However,
