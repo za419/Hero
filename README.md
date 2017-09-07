@@ -4,6 +4,9 @@ A toy version control system I'm working with, purely and entirely for fun
 Depends on [PicoSHA2](https://github.com/okdshin/PicoSHA2) for generating hashes -
 This is added as a submodule.
 
+Also depends on [date](https://github.com/HowardHinnant/date) for generating 
+timestamps - This is also added as a submodule.
+
 ## Contributing
 To contribute to VersionControl, please note that git submodules are used in the
 project. This means that in order to properly clone it, you should pass
