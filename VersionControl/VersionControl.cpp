@@ -238,6 +238,16 @@ int main(int argc, char* argv[]) {
 
 			// Now, calculate and write the SHA256 of that file
 			commit << "checksum " << picosha2::hash256_hex_string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>()) << "\n";
+			
+			// Now, get and write the size of the file
+			ifs.seekg(0, ifs.end);
+			size_t size(ifs.tellg());
+			ifs.seekg(0, ifs.beg); // Restore read pointer to the beginning
+			totalSize += size;
+			commit << "size " << size << "\n";
+
+			// End file header
+			commit << "&&&\n";
 		}
 	}
 
