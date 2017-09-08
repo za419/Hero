@@ -253,6 +253,7 @@ int main(int argc, char* argv[]) {
 			char* buf(new char[size]); // Buffer for reading
 			ifs.read(buf, size); // Read into the buffer
 			commit.write(buf, size); // And write into the commit
+			delete[] buf;
 			
 			// Mark the file as ended
 			commit << "&&&&&\n";
