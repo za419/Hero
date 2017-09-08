@@ -5,6 +5,7 @@
 #pragma once
 
 #include <cstdlib>
+#include <vector>
 
 // First, a shim for mkdir
 #if defined(_WIN32)
@@ -42,3 +43,15 @@ bool copyfile(const char* source, const char* dest) {
 #endif
 }
 #endif // !CROSSPLATFORM_H
+
+// Then, a function to list files in a directory
+#if defined(_WIN32)
+#include <Windows.h>
+#else
+#endif
+// Returns either 0 or an error code
+int filesInDirectory(const std::string& dir, std::vector<std::string>& out) {
+#if defined(_WIN32)
+#else
+#endif
+}
