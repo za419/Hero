@@ -50,6 +50,9 @@ bool copyfile(const char* source, const char* dest) {
 #else
 #include <dirent.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #endif
 // Returns either 0 or an error code
 int filesInDirectory(std::string dir, std::vector<std::string>& out) {
@@ -78,10 +81,14 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 #else
 	DIR* direc;
 	struct dirent* ent;
+	struct stat file_stat;
 	dir += "/";
 	if ((direc = opendir(dir.c_str())) != NULL) {
 		while (ent = readdir(direc) != NULL) {
-			out.push_back(ent->d_name);
+			if (stat((dir + end->d_name).c_str(), &file_stat))
+				out.push_back(ent->d_name); // In case of error, assume regular file
+			if (S_ISREG(file_stat.st_mode)) // Otherwise, only push regular files
+				out.push_back(ent->d_name);
 		}
 		closedir(dir);
 		return 0;
