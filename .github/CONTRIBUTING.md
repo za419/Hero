@@ -24,10 +24,12 @@ something like Git, but I am happy to have you help me see what we can make it i
 
  - [Feature requests](#feature-requests)
 
+ - [Roadmap](#roadmap)
+
  - [First bugs for contributors](#first-bugs-for-contributors)
 
  - [Style guide and Conventions](#style-guide-and-conventions)
- 
+
  - [Code of Conduct](#code-of-conduct)
 
  - [Project management](#project-management)
@@ -173,6 +175,162 @@ the feature you're requesting, which includes all of:
  - Justification for why the feature should be included
 
    - If, in your opinion, this is obvious, you should still include it.
+
+## Roadmap
+
+This section details, in fairly general turns, my plans for expanding the project.
+
+At the time of writing, version 0.01 has been released. This fits the following
+requirements:
+
+ - [x] Can initialize a repository
+
+ - [x] Can add files to index (for later commit)
+
+ - [x] Can create a commit from files in the index
+
+There are only two features which are documented, but not implemented in version
+0.01:
+
+ - [ ] Can use `commit -a` to automatically add files that were in the last
+commit to the commit being made
+
+ - [ ] Can use `commit` with a list of files to automatically add these files
+and commit
+
+These features, as they are noted in the usage information but not actually
+implemented, should be the next ones to be implemented, as soon as feasible.
+
+Along with these two features, the addition of two commands is intended for
+version 0.02:
+
+ - [ ] `log` will, starting at the HEAD, display all commits back to the initial
+commit
+
+ - [ ] `checkout` will, given a complete hash, or 'HEAD', overwrite the contents
+of applicable files with the versions in the given commit
+
+   - If this is given a commit besides the HEAD, either the implementation
+should take steps to either:
+
+     1. Prevent a new commit from being made
+
+     2. Warn the user about making a commit
+
+     3. Allow commits to be made, but off of the checked out commit (probably
+the correct option, in conjunction with 2, once branches are implemented)
+
+   - If this is given HEAD, it should remove that protection
+
+   - Checkout should confirm that what it checks out matches the committed
+SHA256, and issue a warning if there is a mismatch. This is not necessarily an
+error condition, but its worth warning about.
+
+Version 0.03 will include one major change:
+
+ - [ ] File operations will support directories
+
+But may also include minor functionality upgrades to such components as argument
+parsing.
+
+Version 0.04 will add support for:
+
+ - [ ] Branches
+
+   - `checkout` will support being given the name of a branch, and will checkout
+that branch head
+
+   - Merging will be possible, following the following semantics:
+
+     - If a file exists in one branch but not the other, the existing branch
+will supply the file
+
+     - If both branches have a copy of the file, but both versions have the same
+checksum, the first mentioned branch will supply the file
+
+     - If both branches have different copies of the file, but one is from a
+parent commit of the one containing the other, the branch with the latest
+version will supply the file
+
+       - The way this would currently have to be done (parsing every single
+commit in both branches until a commit is found that doesn't have a match) will
+be very slow. Perhaps `merge` should accept an argument to skip this check?
+
+     - If both branches have diverging copies of the file, then the user will be
+prompted to select which branch will supply the file.
+
+   - Note that merge doesn't have a way to merge the contents of files. That
+comes later.
+
+   - Merge will produce a merge commit, with two parents, being the heads of
+parent branches.
+
+   - As far as `log` is concerned, branches don't exist, at least after we
+select a head commit.
+
+ - [ ] Stash
+
+   - Commits can be placed in a special 'stash' branch, which doesn't track
+history, just preserves work for later.
+
+Version 0.05 will support:
+
+ - [ ] Three-way merge
+
+   - Given two branches, the merger will determine the last common ancestor, and
+perform a standard three way merge on these commits
+
+   - The existing merge algorithm will continue to be supported, as an argument
+tomerge`
+
+ - [ ] Producing a diff between any two of:
+
+   - HEAD
+
+   - A branch
+
+   - A commit, specified by hash
+
+   - The contents of the index
+
+   - The working directory
+
+ - [ ] `commit --amend`
+
+   - Allows the user to edit the last commit title and message, updating the
+date and time to current
+
+Version 0.1a will support:
+
+ - [ ] Diff-encoded commits
+
+   - Every X commits is a 'principal commit', encoded with all files
+
+     - This can be edited by repacking the repository (see below)
+
+   - Every other commit is encoded as the patch required to transform the last
+commit's files into the new commit.
+
+ - [ ] `gc`
+
+   - Confirms that the repository is encoded properly
+
+   - Deletes all commits that cannot be accessed from the set of all branch heads
+
+ - [ ] `repack`
+
+   - Alters the settings for diff encoded
+
+   - Can set X (above) to 0 for all-principal encoding (legacy), or -1 for all
+diff encoded (minimum space consumed)
+
+ - [ ] diff-encoded stashing
+
+   - Stashes are now patches from the head commit at the time they were stashed,
+and can be applied onto the current head commit.
+
+Version 0.1 will be the first alpha testing version. Versions thereafter are
+unplanned for now.
 
 ## First bugs for contributors
 
