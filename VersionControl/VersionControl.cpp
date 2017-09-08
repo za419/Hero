@@ -257,6 +257,9 @@ int main(int argc, char* argv[]) {
 			
 			// Mark the file as ended
 			commit << "&&&&&\n";
+
+			// Remove the file from the index
+			remove((".vcs/index/" + file).c_str());
 		}
 
 		// Finally, the commit footer
