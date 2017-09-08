@@ -311,6 +311,13 @@ Version 0.1a will support:
    - Every other commit is encoded as the patch required to transform the last
 commit's files into the new commit.
 
+   - Merge commits are always principal commits, regardless of if its their turn 
+(to avoid diff bugs)
+
+     - If X is set to -1 (all diff encoded, or only principal is the initial), 
+then each file in a merge commit will specify which parent is the diff base 
+for that file
+
  - [ ] `gc`
 
    - Confirms that the repository is encoded properly
