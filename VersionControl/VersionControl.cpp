@@ -90,208 +90,216 @@ int main(int argc, char* argv[]) {
 	
 	// First, the easiest and always-run command: init.
 	// Initialize all the files the other commands assume to exist.
-	if (mode == Command::init) {
-		mkdir(".vcs");
-		mkdir(".vcs/index");
-		mkdir(".vcs/commits");
+	switch (mode) {
+		case Command::init:
+		{
+			mkdir(".vcs");
+			mkdir(".vcs/index");
+			mkdir(".vcs/commits");
 
-		// Make a plain initial commit marking repository creation
-		// First, the easy part.
-		std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
-		commit << "COMMIT HEADER\n";
-		commit << "&&&\n";
-		commit << "parent 0\n";
-
-		// Write datetime using date
-		// Examples taken from the date documentation: https://howardhinnant.github.io/date/date.html
-		auto today = date::year_month_day(date::floor<date::days>(std::chrono::system_clock::now())); // Get current date
-		commit << "date " << today << "\n";
-		auto clock = std::chrono::system_clock::now();
-		auto now = clock - date::floor<date::days>(clock);
-		auto time = date::make_time(date::floor<std::chrono::seconds>(now));
-		commit << "time " << time << " UTC\n";
-
-		// Finish off the header
-		commit << "title Initial Commit\n";
-		commit << "message This commit marks the initialization of the repository.\n";
-		commit << "files []\n";
-		commit << "&&&&&\n";
-
-		// Now, write the commit footer
-		commit << "COMMIT FOOTER\n";
-		commit << "&&&\n";
-		commit << "count 0\n";
-		commit << "size 0\n";
-		commit << "&&&&&\n";
-
-		// Generate the hash of the commit
-		std::string contents = commit.str();
-		std::string hash = picosha2::hash256_hex_string(contents);
-
-		// And write to the commit file
-		std::ofstream file(".vcs/commits/" + hash);
-		if (!file) {
-			remove(".vcs");
-			std::cerr << "Could not initialize repository.\n";
-			exit(1);
-		}
-		file.write(contents.c_str(), contents.size());
-		file.close();
-
-		// Write the HEAD marker
-		std::ofstream head(".vcs/HEAD");
-		if (!head) {
-			remove(".vcs");
-			std::cerr << "Could not initialize repository.\n";
-			exit(1);
-		}
-		head << hash << "\n";
-		head.close();
-
-		std::cout << "Initialized repository.\n";
-	}
-	// Next up, add.
-	// Take the files specified on the commandline, and copy them to the index
-	else if (mode == Command::add) {
-		std::string tmp;
-		for (size_t i = 2; i < argc; ++i) {
-			tmp = argv[i];
-			tmp = ".vcs/index/" + tmp;
-			if (!copyfile(argv[i], tmp.c_str())) {
-				std::cout << "Error: Could not copy file " << argv[i] << ".\n";
-
-				remove(".vcs/index");
-
-				mkdir(".vcs/index");
-				std::cout << "Index emptied.\n";
-				std::cout << "Please re-add the appropriate files to the index.\n";
-
-				exit(1);
-			}
-		}
-
-		std::cout << "All files added to index.\n";
-	}
-	// Finally (for now), commit.
-	// Copy the files in the index into a commit file in the commits folder
-	// This file will have its SHA256 as its filename, and will have formatting compatible with the format specified in commit-blob.txt
-	else if (mode == Command::commit) {
-		std::string title; // Commit title
-		std::string message; // Commit message
-		std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
-		commit << "COMMIT HEADER\n";
-		commit << "&&&\n";
-
-		// Write parent hash
-		std::ifstream head(".vcs/HEAD");
-		if (!head) {
-			std::cerr << "Could not find repository head - have you run " << argv[0] << " init?\n";
-			exit(1);
-		}
-		std::string parent;
-		std::getline(head, parent);
-		head.close();
-		commit << "parent " << parent << "\n";
-
-		// Write datetime using date
-		// Examples taken from the date documentation: https://howardhinnant.github.io/date/date.html
-		auto today = date::year_month_day(date::floor<date::days>(std::chrono::system_clock::now())); // Get current date
-		commit << "date " << today << "\n";
-		auto clock = std::chrono::system_clock::now();
-		auto now = clock - date::floor<date::days>(clock);
-		auto time = date::make_time(date::floor<std::chrono::seconds>(now));
-		commit << "time " << time << " UTC\n";
-
-		// Get commit title from the user and write, escaped, to commit
-		std::cout << "Commit title: ";
-		std::getline(std::cin, title);
-		commit << "title " << escaped(title, "&", "&amp;") << "\n";
-
-		// Do the same for the commit message
-		std::cout << "Commit message (type Ctrl-X then press enter to end):\n";
-		std::getline(std::cin, title, char(24));
-		commit << "message &" << escaped(title, "&", "&amp;") << "&\n";
-
-		// Now, get the list of files in the index, and add their names to the commit header.
-		std::vector<std::string> files;
-		if (int err=filesInDirectory(".vcs/index", files)) {
-			std::cerr << "Could not list index.\n";
-			exit(err);
-		}
-		commit << "files [";
-		for (const auto& file : files) {
-			commit << file << ",";
-		}
-		commit << "]\n";
-
-		// The commit header is now complete.
-		commit << "&&&&&\n";
-
-		// Now, loop over the files
-		size_t totalSize(0); // Tracks the size of all files, for the footer.
-		for (const auto& file : files) {
-			// First, write the file path. For now, we don't properly handle subdirectories, so that's just a filename.
-			commit << file << "\n";
-
-			// Now, open the file
-			std::ifstream ifs(".vcs/index/" + file, std::ios::binary);
-
-			// Now, calculate and write the SHA256 of that file
-			commit << "checksum " << picosha2::hash256_hex_string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>()) << "\n";
-			
-			// Now, get and write the size of the file
-			ifs.seekg(0, ifs.end);
-			size_t size(ifs.tellg());
-			ifs.seekg(0, ifs.beg); // Restore read pointer to the beginning
-			totalSize += size;
-			commit << "size " << size << "\n";
-
-			// End file header
+			// Make a plain initial commit marking repository creation
+			// First, the easy part.
+			std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
+			commit << "COMMIT HEADER\n";
 			commit << "&&&\n";
+			commit << "parent 0\n";
 
-			// Now, the file contents
-			char* buf(new char[size]); // Buffer for reading
-			ifs.read(buf, size); // Read into the buffer
-			commit.write(buf, size); // And write into the commit
-			delete[] buf;
-			
-			// Mark the file as ended
+			// Write datetime using date
+			// Examples taken from the date documentation: https://howardhinnant.github.io/date/date.html
+			auto today = date::year_month_day(date::floor<date::days>(std::chrono::system_clock::now())); // Get current date
+			commit << "date " << today << "\n";
+			auto clock = std::chrono::system_clock::now();
+			auto now = clock - date::floor<date::days>(clock);
+			auto time = date::make_time(date::floor<std::chrono::seconds>(now));
+			commit << "time " << time << " UTC\n";
+
+			// Finish off the header
+			commit << "title Initial Commit\n";
+			commit << "message This commit marks the initialization of the repository.\n";
+			commit << "files []\n";
 			commit << "&&&&&\n";
 
-			// Remove the file from the index
-			remove((".vcs/index/" + file).c_str());
+			// Now, write the commit footer
+			commit << "COMMIT FOOTER\n";
+			commit << "&&&\n";
+			commit << "count 0\n";
+			commit << "size 0\n";
+			commit << "&&&&&\n";
+
+			// Generate the hash of the commit
+			std::string contents = commit.str();
+			std::string hash = picosha2::hash256_hex_string(contents);
+
+			// And write to the commit file
+			std::ofstream file(".vcs/commits/" + hash);
+			if (!file) {
+				remove(".vcs");
+				std::cerr << "Could not initialize repository.\n";
+				exit(1);
+			}
+			file.write(contents.c_str(), contents.size());
+			file.close();
+
+			// Write the HEAD marker
+			std::ofstream head(".vcs/HEAD");
+			if (!head) {
+				remove(".vcs");
+				std::cerr << "Could not initialize repository.\n";
+				exit(1);
+			}
+			head << hash << "\n";
+			head.close();
+
+			std::cout << "Initialized repository.\n";
+			break;
 		}
+		case Command::add:
+		{
+			// Next up, add.
+			// Take the files specified on the commandline, and copy them to the index
+			std::string tmp;
+			for (size_t i = 2; i < argc; ++i) {
+				tmp = argv[i];
+				tmp = ".vcs/index/" + tmp;
+				if (!copyfile(argv[i], tmp.c_str())) {
+					std::cout << "Error: Could not copy file " << argv[i] << ".\n";
 
-		// Finally, the commit footer
-		commit << "COMMIT FOOTER\n";
-		commit << "&&&\n";
-		commit << "count " << files.size() << "\n";
-		commit << "size " << totalSize << "\n";
-		commit << "&&&&&\n";
+					remove(".vcs/index");
 
-		// Finally, write the commit to disk
-		// First, generate the hash of the commit
-		std::string contents = commit.str();
-		std::string hash = picosha2::hash256_hex_string(contents);
+					mkdir(".vcs/index");
+					std::cout << "Index emptied.\n";
+					std::cout << "Please re-add the appropriate files to the index.\n";
 
-		// And write to the commit file
-		std::ofstream file(".vcs/commits/" + hash);
-		if (!file) {
-			std::cerr << "Could not create commit.\n";
-			exit(1);
+					exit(1);
+				}
+			}
+
+			std::cout << "All files added to index.\n";
+			break;
 		}
-		file.write(contents.c_str(), contents.size());
-		file.close();
+		case Command::commit:
+		{
+			// Finally (for now), commit.
+			// Copy the files in the index into a commit file in the commits folder
+			// This file will have its SHA256 as its filename, and will have formatting compatible with the format specified in commit-blob.txt
+			std::string title; // Commit title
+			std::string message; // Commit message
+			std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
+			commit << "COMMIT HEADER\n";
+			commit << "&&&\n";
 
-		// And update the HEAD marker to match this commit
-		std::ofstream marker(".vcs/HEAD", std::ios::trunc);
-		if (!head) {
-			remove((".vcs/commits/"+hash).c_str());
-			std::cerr << "Could not create commit.\n";
-			exit(2);
+			// Write parent hash
+			std::ifstream head(".vcs/HEAD");
+			if (!head) {
+				std::cerr << "Could not find repository head - have you run " << argv[0] << " init?\n";
+				exit(1);
+			}
+			std::string parent;
+			std::getline(head, parent);
+			head.close();
+			commit << "parent " << parent << "\n";
+
+			// Write datetime using date
+			// Examples taken from the date documentation: https://howardhinnant.github.io/date/date.html
+			auto today = date::year_month_day(date::floor<date::days>(std::chrono::system_clock::now())); // Get current date
+			commit << "date " << today << "\n";
+			auto clock = std::chrono::system_clock::now();
+			auto now = clock - date::floor<date::days>(clock);
+			auto time = date::make_time(date::floor<std::chrono::seconds>(now));
+			commit << "time " << time << " UTC\n";
+
+			// Get commit title from the user and write, escaped, to commit
+			std::cout << "Commit title: ";
+			std::getline(std::cin, title);
+			commit << "title " << escaped(title, "&", "&amp;") << "\n";
+
+			// Do the same for the commit message
+			std::cout << "Commit message (type Ctrl-X then press enter to end):\n";
+			std::getline(std::cin, title, char(24));
+			commit << "message &" << escaped(title, "&", "&amp;") << "&\n";
+
+			// Now, get the list of files in the index, and add their names to the commit header.
+			std::vector<std::string> files;
+			if (int err = filesInDirectory(".vcs/index", files)) {
+				std::cerr << "Could not list index.\n";
+				exit(err);
+			}
+			commit << "files [";
+			for (const auto& file : files) {
+				commit << file << ",";
+			}
+			commit << "]\n";
+
+			// The commit header is now complete.
+			commit << "&&&&&\n";
+
+			// Now, loop over the files
+			size_t totalSize(0); // Tracks the size of all files, for the footer.
+			for (const auto& file : files) {
+				// First, write the file path. For now, we don't properly handle subdirectories, so that's just a filename.
+				commit << file << "\n";
+
+				// Now, open the file
+				std::ifstream ifs(".vcs/index/" + file, std::ios::binary);
+
+				// Now, calculate and write the SHA256 of that file
+				commit << "checksum " << picosha2::hash256_hex_string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>()) << "\n";
+
+				// Now, get and write the size of the file
+				ifs.seekg(0, ifs.end);
+				size_t size(ifs.tellg());
+				ifs.seekg(0, ifs.beg); // Restore read pointer to the beginning
+				totalSize += size;
+				commit << "size " << size << "\n";
+
+				// End file header
+				commit << "&&&\n";
+
+				// Now, the file contents
+				char* buf(new char[size]); // Buffer for reading
+				ifs.read(buf, size); // Read into the buffer
+				commit.write(buf, size); // And write into the commit
+				delete[] buf;
+
+				// Mark the file as ended
+				commit << "&&&&&\n";
+
+				// Remove the file from the index
+				remove((".vcs/index/" + file).c_str());
+			}
+
+			// Finally, the commit footer
+			commit << "COMMIT FOOTER\n";
+			commit << "&&&\n";
+			commit << "count " << files.size() << "\n";
+			commit << "size " << totalSize << "\n";
+			commit << "&&&&&\n";
+
+			// Finally, write the commit to disk
+			// First, generate the hash of the commit
+			std::string contents = commit.str();
+			std::string hash = picosha2::hash256_hex_string(contents);
+
+			// And write to the commit file
+			std::ofstream file(".vcs/commits/" + hash);
+			if (!file) {
+				std::cerr << "Could not create commit.\n";
+				exit(1);
+			}
+			file.write(contents.c_str(), contents.size());
+			file.close();
+
+			// And update the HEAD marker to match this commit
+			std::ofstream marker(".vcs/HEAD", std::ios::trunc);
+			if (!head) {
+				remove((".vcs/commits/" + hash).c_str());
+				std::cerr << "Could not create commit.\n";
+				exit(2);
+			}
+			marker << hash << "\n";
+			marker.close();
+			break;
 		}
-		marker << hash << "\n";
-		marker.close();
 	}
 
 	return 0;
