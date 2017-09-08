@@ -65,6 +65,7 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 			out.push_back(dir + "\\" + ffd.cFileName);
 		} while (FindNextFile(hFind, &ffd));
 		DWORD err(GetLastError());
+		FindClose(hFind);
 		if (err == ERROR_NO_MORE_FILES || err == ERROR_SUCCESS)
 			return 0;
 		else
