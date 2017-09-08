@@ -11,7 +11,7 @@ files [<comma separated list of paths to files in commit, for -a>, with an endin
 checksum <SHA256>
 size <bytes>
 &&&
-<file contents, with all '&' replaced by '&amp;'>
+<file contents, unmodified>
 &&&&&
 
 repeat as needed
