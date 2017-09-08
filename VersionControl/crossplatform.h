@@ -48,6 +48,8 @@ bool copyfile(const char* source, const char* dest) {
 #if defined(_WIN32)
 #include <Windows.h>
 #else
+#include <dirent.h>
+#include <errno.h>
 #endif
 // Returns either 0 or an error code
 int filesInDirectory(std::string dir, std::vector<std::string>& out) {
@@ -74,5 +76,17 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 	else
 		return (int)ERROR_INVALID_HANDLE;
 #else
+	DIR* direc;
+	struct dirent* ent;
+	dir += "/";
+	if ((direc = opendir(dir.c_str())) != NULL) {
+		while (ent = readdir(direc) != NULL) {
+			out.push_back(dir + "/" + ent->d_name);
+		}
+		closedir(dir);
+		return 0;
+	}
+	else
+		return errno;
 #endif
 }
