@@ -223,6 +223,9 @@ int main(int argc, char* argv[]) {
 			commit << file << ",";
 		}
 		commit << "]\n";
+
+		// The commit header is now complete.
+		commit << "&&&&&\n";
 	}
 
 	return 0;
