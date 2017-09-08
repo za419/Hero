@@ -324,6 +324,13 @@ commit's files into the new commit.
    - Can set X (above) to 0 for all-principal encoding (legacy), or -1 for all
 diff encoded (minimum space consumed)
 
+ - [ ] `fsck`
+
+   - Checks all reachable commits, and checks whether their hash matches their
+filename.
+
+   - Reports all inconsistencies to the user
+
  - [ ] diff-encoded stashing
 
    - Stashes are now patches from the head commit at the time they were stashed,
