@@ -258,6 +258,13 @@ int main(int argc, char* argv[]) {
 			// Mark the file as ended
 			commit << "&&&&&\n";
 		}
+
+		// Finally, the commit footer
+		commit << "COMMIT FOOTER\n";
+		commit << "&&&\n";
+		commit << "count " << files.size() << "\n";
+		commit << "size " << totalSize << "\n";
+		commit << "&&&&&\n";
 	}
 
 	return 0;
