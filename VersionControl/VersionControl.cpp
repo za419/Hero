@@ -282,6 +282,16 @@ int main(int argc, char* argv[]) {
 		}
 		file.write(contents.c_str(), contents.size());
 		file.close();
+
+		// And update the HEAD marker to match this commit
+		std::ofstream marker(".vcs/HEAD", std::ios::trunc);
+		if (!head) {
+			remove((".vcs/commits/"+hash).c_str());
+			std::cerr << "Could not create commit.\n";
+			exit(2);
+		}
+		marker << hash << "\n";
+		marker.close();
 	}
 
 	return 0;
