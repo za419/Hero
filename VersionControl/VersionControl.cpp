@@ -226,6 +226,19 @@ int main(int argc, char* argv[]) {
 
 		// The commit header is now complete.
 		commit << "&&&&&\n";
+
+		// Now, loop over the files
+		size_t totalSize(0); // Tracks the size of all files, for the footer.
+		for (const auto& file : files) {
+			// First, write the file path. For now, we don't properly handle subdirectories, so that's just a filename.
+			commit << file << "\n";
+
+			// Now, open the file
+			std::ifstream ifs(".vcs/index/" + file, std::ios::binary);
+
+			// Now, calculate and write the SHA256 of that file
+			commit << "checksum " << picosha2::hash256_hex_string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>()) << "\n";
+		}
 	}
 
 	return 0;
