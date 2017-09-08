@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
+#include <vector>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
 enum class Command : uint8_t { unknownCommand, init, add, commit };
@@ -210,6 +211,18 @@ int main(int argc, char* argv[]) {
 		std::cout << "Commit message (type Ctrl-X then press enter to end):\n";
 		std::getline(std::cin, title, char(24));
 		commit << "message &" << escaped(title, "&", "&amp;") << "&\n";
+
+		// Now, get the list of files in the index, and add their names to the commit header.
+		std::vector<std::string> files;
+		if (int err=filesInDirectory(".vcs/index", files)) {
+			std::cerr << "Could not list index.\n";
+			exit(err);
+		}
+		commit << "files [";
+		for (const auto& file : files) {
+			commit << file << ",";
+		}
+		commit << "]\n";
 	}
 
 	return 0;
