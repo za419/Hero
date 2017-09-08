@@ -265,6 +265,20 @@ int main(int argc, char* argv[]) {
 		commit << "count " << files.size() << "\n";
 		commit << "size " << totalSize << "\n";
 		commit << "&&&&&\n";
+
+		// Finally, write the commit to disk
+		// First, generate the hash of the commit
+		std::string contents = commit.str();
+		std::string hash = picosha2::hash256_hex_string(contents);
+
+		// And write to the commit file
+		std::ofstream file(".vcs/commits/" + hash);
+		if (!file) {
+			std::cerr << "Could not create commit.\n";
+			exit(1);
+		}
+		file.write(contents.c_str(), contents.size());
+		file.close();
 	}
 
 	return 0;
