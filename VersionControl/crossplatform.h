@@ -44,14 +44,34 @@ bool copyfile(const char* source, const char* dest) {
 }
 #endif // !CROSSPLATFORM_H
 
-// Then, a function to list files in a directory
+// Then, a function to list (regular) files in a directory
 #if defined(_WIN32)
 #include <Windows.h>
 #else
 #endif
 // Returns either 0 or an error code
-int filesInDirectory(const std::string& dir, std::vector<std::string>& out) {
-#if defined(_WIN32)
+int filesInDirectory(std::string dir, std::vector<std::string>& out) {
+	out.clear();
+#if defined(_WIN32) // Adapted from MSDN example: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365200(v=vs.85).aspx
+	HANDLE hFind;
+	WIN32_FIND_DATA ffd;
+
+	dir += "\\*";
+	if ((hFind = FindFirstFile(dir.c_str(), &ffd)) != INVALID_HANDLE_VALUE) {
+		do {
+			// Skip directories
+			if (ffd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)
+				continue;
+			out.push_back(dir + "\\" + ffd.cFileName);
+		} while (FindNextFile(hFind, &ffd));
+		DWORD err(GetLastError());
+		if (err == ERROR_NO_MORE_FILES || err == ERROR_SUCCESS)
+			return 0;
+		else
+			return (int)err;
+	}
+	else
+		return (int)ERROR_INVALID_HANDLE;
 #else
 #endif
 }
