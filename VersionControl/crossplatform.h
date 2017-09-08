@@ -64,7 +64,7 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 			// Skip directories
 			if (ffd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)
 				continue;
-			out.push_back(dir + "\\" + ffd.cFileName);
+			out.push_back(ffd.cFileName);
 		} while (FindNextFile(hFind, &ffd));
 		DWORD err(GetLastError());
 		FindClose(hFind);
@@ -81,7 +81,7 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 	dir += "/";
 	if ((direc = opendir(dir.c_str())) != NULL) {
 		while (ent = readdir(direc) != NULL) {
-			out.push_back(dir + "/" + ent->d_name);
+			out.push_back(ent->d_name);
 		}
 		closedir(dir);
 		return 0;
