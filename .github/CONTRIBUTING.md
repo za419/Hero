@@ -344,7 +344,47 @@ filename.
 and can be applied onto the current head commit.
 
 Version 0.1a will be the first alpha testing version. Versions thereafter are
-unplanned for now.
+unplanned for now. However, the following features are in consideration for 
+development following the beginning of alpha testing:
+
+ - A decoded-files cache, which holds copies of un-diffed files from various 
+commits, separately from the commit data.
+ 
+   - Tools would first check for the version of the file they're looking for in 
+this cache:
+   
+     - If a file is there, use it
+
+     - If it is empty, fill it after the file is created for the tool's use
+
+     - If it is not present, but a version of the file within a few commits is, do 
+nothing.
+
+     - Else, create an empty file
+
+   - This cache would be cleared by `gc`
+
+   - The advantage of this would be a negation of the speed downside to the diff 
+encode, without the increased size of commits
+
+     - However, the cache will still consume a large amount of disk space. The 
+filling of the cache is conservative, so it should only involve commonly accessed 
+files, but of course there will be a tendency for the cache to be filled with 
+files the user never sees, but are used to decode descendant versions.
+
+       - Perhaps some tools should not fill the cache, or the fill should be 
+restricted to files in recent commits only.
+
+ - Automatic prompting to run `gc` every so often
+ 
+   - This is especially needed for the cache, since its size will balloon if it is 
+not commonly cleared, and we don't expect users to run `gc` often.
+
+ - Provide a way for users to format `log` output
+ 
+ - Rebasing
+ 
+   - This is pretty complicated work, so don't expect it anytime soon.
 
 ## First bugs for contributors
 
