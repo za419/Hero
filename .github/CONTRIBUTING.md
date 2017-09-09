@@ -343,7 +343,7 @@ filename.
    - Stashes are now patches from the head commit at the time they were stashed,
 and can be applied onto the current head commit.
 
-Version 0.1 will be the first alpha testing version. Versions thereafter are
+Version 0.1a will be the first alpha testing version. Versions thereafter are
 unplanned for now.
 
 ## First bugs for contributors
