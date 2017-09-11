@@ -115,6 +115,11 @@ int main(int argc, char* argv[]) {
 			commit();
 			break;
 		}
+		case Command::commitLast:
+		{
+			commitLast();
+			break;
+		}
 	}
 
 	return 0;
