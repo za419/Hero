@@ -192,7 +192,7 @@ requirements:
 There are only two features which are documented, but not implemented in version
 0.01:
 
- - [ ] Can use `commit -a` to automatically add files that were in the last
+ - [x] Can use `commit -a` to automatically add files that were in the last
 commit to the commit being made
 
  - [ ] Can use `commit` with a list of files to automatically add these files
