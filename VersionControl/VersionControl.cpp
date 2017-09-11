@@ -387,5 +387,39 @@ void commitLast() {
 // Has the semantics that all files listed are committed, and no other
 // The index is preserved as it was, except that files present in the index and command line are removed from the index
 void commitFiles(const std::vector<std::string>& files) {
+	remove(".vcs/indexCopy"); // Just in case
 
+	// Back up the index
+	if (!copyDirectory(".vcs/index", ".vcs/indexCopy")) { 
+		std::cerr << "Could not back up repository index.\n";
+		exit(1);
+	}
+
+	// Empty the index entirely
+	remove(".vcs/index");
+	mkdir(".vcs/index");
+
+	for (const auto& file : files) {
+		remove((".vcs/indexCopy/"+file).c_str()); // Make sure the file to be committed is removed from the copied index
+	}
+
+	// Add all commandline files
+	add(files);
+	// And then commit.
+	commit();
+
+	// Restore the index, minus duplicated files
+	if (!copyDirectory(".vcs/indexCopy", ".vcs/index")) {
+		std::cerr << "Could not restore index.\n";
+		if (mkdir(".vcs/index") && errno != EEXIST) {
+			std::cerr << "Also could not create index directory.\n";
+			std::cerr << "Please ensure that the folder \".vcs\" directory is writable...\n";
+			std::cerr << "Then create a folder named \"index\" inside it before running \"add\" or \"commit\".\n";
+			exit(errno);
+		}
+		else {
+			std::cerr << "The index has been emptied.\n";
+			exit(2);
+		}
+	}
 }
