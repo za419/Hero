@@ -189,7 +189,7 @@ void init() {
 
 	// Finish off the header
 	commit << "title Initial Commit\n";
-	commit << "message This commit marks the initialization of the repository.\n";
+	commit << "message &This commit marks the initialization of the repository.&\n";
 	commit << "files []\n";
 	commit << "&&&&&\n";
 
