@@ -445,5 +445,7 @@ void log() {
 		// And finally the message
 		std::getline(commit, line);
 		std::cout << "\t" << line.substr(8) << "\n\n"; // 8 characters: "message "
+
+		commit.close();
 	}
 }
