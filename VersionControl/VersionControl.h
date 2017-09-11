@@ -4,4 +4,15 @@
 #ifndef VERSIONCONTROL_H
 #define VERSIONCONTROL_H
 #pragma once
+
+#include <string>
+#include <fstream>
+
+std::string getHeadHash() {
+	std::ifstream HEAD(".vcs/HEAD");
+	std::string out;
+	std::getline(HEAD, out);
+	return out;
+}
+
 #endif
