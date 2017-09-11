@@ -18,6 +18,7 @@
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
 enum class Command : uint8_t { unknownCommand, init, add, commit };
 
+// Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
 	std::cout << "Usage:\n";
 
