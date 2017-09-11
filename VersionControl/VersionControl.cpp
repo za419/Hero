@@ -51,6 +51,11 @@ void usage(char* invoke, Command source) {
 		std::cout << "These files will be treated as those which shall be the ONLY ones committed.\n";
 		std::cout << "Note that if the index is altered while this command is running, the commit may be produced in an inconsistent state.\n";
 		break;
+	case Command::log:
+		std::cout << invoke << " log\n";
+		std::cout << "Outputs a version history of the repository by commits.\n";
+		std::cout << "No arguments are required or allowed.\n";
+		break;
 	case Command::unknownCommand:
 	default:
 		std::cout << invoke << " init\n";
