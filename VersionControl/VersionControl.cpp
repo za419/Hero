@@ -17,13 +17,14 @@
 #include <vector>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
-enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast };
+enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles };
 
 // Function declarations for running commands
 void init();
 void add(const std::vector<std::string>&);
 void commit();
 void commitLast();
+void commitFiles(const std::vector<std::string>&);
 
 // Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
@@ -100,7 +101,7 @@ int main(int argc, char* argv[]) {
 	else {
 		usage(argv[0], Command::unknownCommand);
 	}
-	
+
 	// Dispatch command execution to the appropriate function
 	switch (mode) {
 		case Command::init:
@@ -359,13 +360,13 @@ void commitLast() {
 	}
 	std::stringstream filestream;
 	std::vector<std::string> files;
-	
+
 	do {
 		std::getline(last, line);
 	} while (line.find("files [")!=0);
 	last.close();
 
-	// 7 is the first character after "files [", plus one for the ending ']' 
+	// 7 is the first character after "files [", plus one for the ending ']'
 	filestream<<line.substr(7, line.size() - 8);
 
 	// Read all entries, using the stream as parser, into the vector
@@ -380,4 +381,9 @@ void commitLast() {
 	add(files);
 	// And then commit.
 	commit();
+}
+
+// Handles commit with a list of files
+void commitFiles(const std::vector<std::string>& files) {
+
 }
