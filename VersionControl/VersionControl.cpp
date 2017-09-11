@@ -120,6 +120,15 @@ int main(int argc, char* argv[]) {
 			commitLast();
 			break;
 		}
+		default:
+		{
+			std::cerr << "Unrecognized commandline:";
+			for (int i = 1; i < argc; ++i) {
+				std::cerr << " " << argv[i];
+			}
+			std::cerr << "\n";
+			exit(127);
+		}
 	}
 
 	return 0;
