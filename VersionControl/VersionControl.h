@@ -14,6 +14,7 @@ std::string getHeadHash() {
 		return "";
 	std::string out;
 	std::getline(HEAD, out);
+	HEAD.close();
 	return out;
 }
 #endif
