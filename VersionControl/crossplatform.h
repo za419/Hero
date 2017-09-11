@@ -42,7 +42,6 @@ bool copyfile(const char* source, const char* dest) {
 	close(dest);
 #endif
 }
-#endif // !CROSSPLATFORM_H
 
 // Then, a function to list (regular) files in a directory
 #if defined(_WIN32)
@@ -97,3 +96,4 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 		return errno;
 #endif
 }
+#endif // !CROSSPLATFORM_H
