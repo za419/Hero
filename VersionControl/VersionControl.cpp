@@ -5,6 +5,7 @@
 #include "../PicoSHA2/picosha2.h"
 #include "crossplatform.h"
 #include "Utils.h"
+#include "VersionControl.h"
 
 #include <iostream>
 #include <cstdint>
@@ -231,14 +232,11 @@ void commit() {
 	commit << "&&&\n";
 
 	// Write parent hash
-	std::ifstream head(".vcs/HEAD");
-	if (!head) {
+	std::string parent(getHeadHash());
+	if (parent=="") {
 		std::cerr << "Could not find repository head - have you run init?\n";
 		exit(1);
 	}
-	std::string parent;
-	std::getline(head, parent);
-	head.close();
 	commit << "parent " << parent << "\n";
 
 	// Write datetime using date
@@ -332,14 +330,14 @@ void commit() {
 	file.close();
 
 	// And update the HEAD marker to match this commit
-	std::ofstream marker(".vcs/HEAD", std::ios::trunc);
+	std::ofstream head(".vcs/HEAD", std::ios::trunc);
 	if (!head) {
 		remove((".vcs/commits/" + hash).c_str());
 		std::cerr << "Could not create commit.\n";
 		exit(2);
 	}
-	marker << hash << "\n";
-	marker.close();
+	head << hash << "\n";
+	head.close();
 }
 
 // Handles 'commit -a'
