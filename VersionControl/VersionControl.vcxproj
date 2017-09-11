@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="crossplatform.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="VersionControl.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\commit-blob.txt" />
