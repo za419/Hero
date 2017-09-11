@@ -140,6 +140,7 @@ int main(int argc, char* argv[]) {
 				addFiles.emplace_back(argv[i]);
 			}
 			commitFiles(addFiles);
+			break;
 		}
 		default:
 		{
