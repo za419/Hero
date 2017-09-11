@@ -137,6 +137,11 @@ int main(int argc, char* argv[]) {
 			commitLast();
 			break;
 		}
+		case Command::log:
+		{
+			log();
+			break;
+		}
 		default:
 		{
 			std::cerr << "Unrecognized commandline:";
