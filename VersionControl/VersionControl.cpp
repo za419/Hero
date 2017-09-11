@@ -89,6 +89,9 @@ int main(int argc, char* argv[]) {
 			else if (!strcmp(argv[2], "-a")) {
 				mode = Command::commitLast;
 			}
+			else {
+				mode = Command::commitFiles;
+			}
 		}
 	}
 	else if (!strcmp(argv[1], "init")) {
@@ -128,6 +131,15 @@ int main(int argc, char* argv[]) {
 		{
 			commitLast();
 			break;
+		}
+		case Command::commitFiles:
+		{
+			std::vector<std::string> addFiles;
+			addFiles.reserve(argc - 2); // Reserve enough space for all files
+			for (int i = 2; i < argc; ++i) {
+				addFiles.emplace_back(argv[i]);
+			}
+			commitFiles(addFiles);
 		}
 		default:
 		{
