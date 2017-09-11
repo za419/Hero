@@ -284,6 +284,7 @@ void commit() {
 	// Do the same for the commit message
 	std::cout << "Commit message (type Ctrl-X then press enter to end):\n";
 	std::getline(std::cin, title, char(24));
+	title = escaped(title, std::string((char)24,1), ""); // Just in case
 	title = escaped(title, "/", "/sl;");
 	commit << "message &" << escaped(title, "&", "/amp;") << "&\n";
 
