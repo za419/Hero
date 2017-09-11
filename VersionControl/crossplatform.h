@@ -97,6 +97,8 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 #endif
 }
 
+#include <iostream>
+
 // Technically, this isn't a shim. But, I'm still pursuing a more efficient way to do this.
 bool copyDirectory(const std::string& source, const std::string& dest) { // Returns whether all operations succeeded
 	mkdir(dest.c_str());
@@ -107,7 +109,7 @@ bool copyDirectory(const std::string& source, const std::string& dest) { // Retu
 	}
 
 	for (const auto& file : files) {
-		if (!copyfile(file.c_str(), (dest + source).c_str())) {
+		if (!copyfile((source + "/" + file).c_str(), (dest + "/" + file).c_str())) {
 			return false;
 		}
 	}
