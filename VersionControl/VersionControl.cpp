@@ -384,6 +384,8 @@ void commitLast() {
 }
 
 // Handles commit with a list of files
+// Has the semantics that all files listed are committed, and no other
+// The index is preserved as it was, except that files present in the index and command line are removed from the index
 void commitFiles(const std::vector<std::string>& files) {
 
 }
