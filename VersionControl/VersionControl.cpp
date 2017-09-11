@@ -352,7 +352,7 @@ void commit() {
 // Passes that vector into add, and then calls commit
 void commitLast() {
 	std::string line(getHeadHash());
-	std::ifstream last(line);
+	std::ifstream last(".vcs/commits/"+line);
 	std::stringstream filestream;
 	std::vector<std::string> files;
 	
