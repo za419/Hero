@@ -16,12 +16,13 @@
 #include <vector>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
-enum class Command : uint8_t { unknownCommand, init, add, commit };
+enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast };
 
 // Function declarations for running commands
 void init();
 void add(const std::vector<std::string>&);
 void commit();
+void commitLast();
 
 // Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
@@ -206,7 +207,6 @@ void add(const std::vector<std::string>& files) {
 	std::cout << "All files added to index.\n";
 }
 
-// Finally (for now), commit.
 // Copy the files in the index into a commit file in the commits folder
 // This file will have its SHA256 as its filename, and will have formatting compatible with the format specified in commit-blob.txt
 void commit() {
@@ -326,4 +326,11 @@ void commit() {
 	}
 	marker << hash << "\n";
 	marker.close();
+}
+
+// Handles 'commit -a'
+// That is, reads the HEAD commit, lists the files named there into a vector...
+// Passes that vector into add, and then calls commit
+void commitLast() {
+
 }
