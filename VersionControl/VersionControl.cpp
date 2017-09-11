@@ -111,8 +111,9 @@ int main(int argc, char* argv[]) {
 		case Command::add:
 		{
 			std::vector<std::string> addFiles(argc - 2);
-			for (int i = 2; i < argc; ++i)
+			for (int i = 2; i < argc; ++i) {
 				addFiles.emplace_back(argv[i]);
+			}
 			add(addFiles);
 			break;
 		}
