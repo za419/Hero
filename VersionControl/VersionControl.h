@@ -10,9 +10,10 @@
 
 std::string getHeadHash() {
 	std::ifstream HEAD(".vcs/HEAD");
+	if (!HEAD)
+		return "";
 	std::string out;
 	std::getline(HEAD, out);
 	return out;
 }
-
 #endif
