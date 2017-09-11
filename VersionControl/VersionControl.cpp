@@ -278,12 +278,14 @@ void commit() {
 	// Get commit title from the user and write, escaped, to commit
 	std::cout << "Commit title: ";
 	std::getline(std::cin, title);
-	commit << "title " << escaped(title, "&", "&amp;") << "\n";
+	title = escaped(title, "/", "/sl;");
+	commit << "title " << escaped(title, "&", "/amp;") << "\n";
 
 	// Do the same for the commit message
 	std::cout << "Commit message (type Ctrl-X then press enter to end):\n";
 	std::getline(std::cin, title, char(24));
-	commit << "message &" << escaped(title, "&", "&amp;") << "&\n";
+	title = escaped(title, "/", "/sl;");
+	commit << "message &" << escaped(title, "&", "/amp;") << "&\n";
 
 	// Now, get the list of files in the index, and add their names to the commit header.
 	std::vector<std::string> files;
