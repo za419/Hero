@@ -17,7 +17,7 @@
 #include <vector>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
-enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles };
+enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log};
 
 // Function declarations for running commands
 void init();
@@ -25,6 +25,7 @@ void add(const std::vector<std::string>&);
 void commit();
 void commitLast();
 void commitFiles(const std::vector<std::string>&);
+void log();
 
 // Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
@@ -386,4 +387,45 @@ void commitLast() {
 // Handles commit with a list of files
 void commitFiles(const std::vector<std::string>& files) {
 
+}
+
+// Produces a log of the commit history by the commit headers
+void log() {
+	std::string hash(getHeadHash());
+	std::ifstream commit;
+
+	while (hash != "0") {
+		commit.open(".vcs/commits/" + hash);
+		if (!commit) {
+			std::cerr << "Could not access commit " << hash << "\n";
+			exit(1);
+		}
+		std::string line;
+
+		std::cout << "commit " << hash << "\n";
+
+		// Discard two lines. The next line is the parent.
+		std::getline(commit, line);
+		std::getline(commit, line);
+
+		// Now, get the parent and extract the hash
+		std::getline(commit, line);
+		hash = line.substr(7); // There are 7 characters before the hash begins: "parent "
+
+		// The next line is the date
+		std::getline(commit, line);
+		std::cout << "Committed on " << line.substr(5); // 5 characters: "date "
+
+		// And then the time
+		std::getline(commit, line);
+		std::cout << " at " << line.substr(5) << "\n"; // Again, 5 characters: "time "
+
+		// The title
+		std::getline(commit, line);
+		std::cout << "\t" << line.substr(6) << "\n\n"; // 6 characters: "title "
+
+		// And finally the message
+		std::getline(commit, line);
+		std::cout << "\t" << line.substr(8) << "\n\n"; // 8 characters: "message "
+	}
 }
