@@ -344,5 +344,29 @@ void commit() {
 // That is, reads the HEAD commit, lists the files named there into a vector...
 // Passes that vector into add, and then calls commit
 void commitLast() {
+	std::string line(getHeadHash());
+	std::ifstream last(line);
+	std::stringstream filestream;
+	std::vector<std::string> files;
+	
+	do {
+		std::getline(last, line);
+	} while (line.find("files [")!=0);
+	last.close();
 
+	// 7 is the first character after "files [", plus one for the ending ']' 
+	filestream<<line.substr(7, line.size() - 8);
+
+	// Read all entries, using the stream as parser, into the vector
+	while (true) {
+		std::getline(filestream, line);
+		if (filestream.eof())
+			break;
+		files.emplace_back(line);
+	}
+
+	// Finally, we can add these files to the index.
+	add(files);
+	// And then commit.
+	commit();
 }
