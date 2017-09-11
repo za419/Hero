@@ -443,7 +443,8 @@ void log() {
 		std::cout << "\t" << line.substr(6) << "\n\n"; // 6 characters: "title "
 
 		// And finally the message
-		std::getline(commit, line);
+		std::getline(commit, line, '&'); // Discard the beginning
+		std::getline(commit, line, '&'); // And fetch the entire message
 		std::cout << "\t" << line.substr(8) << "\n\n"; // 8 characters: "message "
 
 		commit.close();
