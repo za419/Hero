@@ -96,4 +96,22 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 		return errno;
 #endif
 }
+
+// Technically, this isn't a shim. But, I'm still pursuing a more efficient way to do this.
+bool copyDirectory(const std::string& source, const std::string& dest) { // Returns whether all operations succeeded
+	mkdir(dest.c_str());
+
+	std::vector<std::string> files;
+	if (filesInDirectory(source, files)) {
+		return false;
+	}
+
+	for (const auto& file : files) {
+		if (!copyfile(file.c_str(), (dest + source).c_str())) {
+			return false;
+		}
+	}
+
+	return true;
+}
 #endif // !CROSSPLATFORM_H
