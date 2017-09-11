@@ -353,6 +353,10 @@ void commit() {
 void commitLast() {
 	std::string line(getHeadHash());
 	std::ifstream last(".vcs/commits/"+line);
+	if (!last) {
+		std::cerr << "Could not access last commit.\n";
+		exit(1);
+	}
 	std::stringstream filestream;
 	std::vector<std::string> files;
 	
