@@ -111,7 +111,7 @@ int main(int argc, char* argv[]) {
 		case Command::add:
 		{
 			std::vector<std::string> addFiles;
-			addFiles.reserve(argc - 2);
+			addFiles.reserve(argc - 2); // Reserve enough space for all files
 			for (int i = 2; i < argc; ++i) {
 				addFiles.emplace_back(argv[i]);
 			}
