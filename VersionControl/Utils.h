@@ -1,4 +1,4 @@
-// Utils.h: Small utility functions
+// Utils.h: Small general-purpose utility functions
 
 #ifndef UTILS_H
 #define UTILS_H
