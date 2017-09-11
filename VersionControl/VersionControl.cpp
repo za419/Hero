@@ -56,6 +56,7 @@ void usage(char* invoke, Command source) {
 		std::cout << invoke << " init\n";
 		std::cout << invoke << " add [files]\n";
 		std::cout << invoke << " commit [files] [-a]\n";
+		std::cout << invoke << " log\n";
 		break;
 	}
 	exit(0);
