@@ -83,13 +83,20 @@ int main(int argc, char* argv[]) {
 	else if (!strcmp(argv[1], "commit")) {
 		mode = Command::commit;
 
-		if (argc>2) {
+		if (argc > 2) {
 			if (!strcmp(argv[2], "-h")) {
 				usage(argv[0], Command::commit);
 			}
 			else if (!strcmp(argv[2], "-a")) {
 				mode = Command::commitLast;
 			}
+		}
+	}
+	else if (!strcmp(argv[1], "log")) {
+		mode = Command::log;
+
+		if (argc > 2) {
+			usage(argv[0], Command::log);
 		}
 	}
 	else if (!strcmp(argv[1], "init")) {
