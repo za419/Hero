@@ -15,6 +15,7 @@
 #include <sstream>
 #include <chrono>
 #include <vector>
+#include <iomanip>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
 enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log};
@@ -452,7 +453,8 @@ void log() {
 		std::getline(commit, line, '&'); // And fetch the entire message
 		line = escaped(line, "/amp;", "&");
 		line = escaped(line, "/sl;", "/");
-		std::cout << "\t" << line << "\n\n"; // 8 characters: "message "
+		line = escaped(line, "\n", "\n\t"); // Indent every line of the commit message
+		std::cout << "\t" << line << "\n\n";
 
 		commit.close();
 	}
