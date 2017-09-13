@@ -336,7 +336,7 @@ void commit() {
 	commit << "size " << totalSize << "\n";
 	commit << "&&&&&\n";
 
-	// Finally, write the commit to disk
+	// Finally, write the commit to disk and empty the index
 	// First, generate the hash of the commit
 	std::string contents = commit.str();
 	std::string hash = picosha2::hash256_hex_string(contents);
@@ -359,6 +359,9 @@ void commit() {
 	}
 	head << hash << "\n";
 	head.close();
+
+	removeDirectory(".vcs/index");
+	mkdir(".vcs/index");
 }
 
 // Handles 'commit -a'
