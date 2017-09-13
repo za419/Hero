@@ -424,9 +424,11 @@ void commitFiles(const std::vector<std::string>& files) {
 	// And then commit.
 	commit();
 
+	removeDirectory(".vcs/index");
 	// Restore the index, minus duplicated files
 	if (!copyDirectory(".vcs/indexCopy", ".vcs/index")) {
 		std::cerr << "Could not restore index.\n";
+		removeDirectory(".vcs/indexCopy");
 		if (mkdir(".vcs/index") && errno != EEXIST) {
 			std::cerr << "Also could not create index directory.\n";
 			std::cerr << "Please ensure that the folder \".vcs\" directory is writable...\n";
@@ -438,4 +440,5 @@ void commitFiles(const std::vector<std::string>& files) {
 			exit(2);
 		}
 	}
+	removeDirectory(".vcs/indexCopy");
 }
