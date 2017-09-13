@@ -15,6 +15,14 @@
 #include <sys/stat.h>
 #endif
 
+// Now, rmdir
+#if defined(_WIN32)
+#include <direct.h>
+#define rmdir(dirname) _rmdir((dirname))
+#else
+#include <unistd.h>
+#endif
+
 // Next, a function to copy files
 #if defined(_WIN32)
 #include <Windows.h>
