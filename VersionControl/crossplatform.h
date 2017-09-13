@@ -105,6 +105,24 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 #endif
 }
 
+// Now removeDirectory (different from rmdir in that it doesn't fail on non-empty directories)
+// Returns 0, or the return value of the first function to return an error
+int removeDirectory(std::string dir) {
+	std::vector<std::string> files;
+	if (int err=filesInDirectory(dir, files)) {
+		return err;
+	}
+
+	for (const auto& file : files) {
+		if (int err = remove(file.c_str())) {
+			return err;
+		}
+	}
+
+	rmdir(dir.c_str());
+	return 0;
+}
+
 #include <iostream>
 
 // Technically, this isn't a shim. But, I'm still pursuing a more efficient way to do this.
