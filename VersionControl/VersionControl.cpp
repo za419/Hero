@@ -201,7 +201,7 @@ void init() {
 	// And write to the commit file
 	std::ofstream file(".vcs/commits/" + hash);
 	if (!file) {
-		remove(".vcs");
+		removeDirectory(".vcs");
 		std::cerr << "Could not initialize repository.\n";
 		exit(1);
 	}
@@ -211,7 +211,7 @@ void init() {
 	// Write the HEAD marker
 	std::ofstream head(".vcs/HEAD");
 	if (!head) {
-		remove(".vcs");
+		removeDirectory(".vcs");
 		std::cerr << "Could not initialize repository.\n";
 		exit(1);
 	}
@@ -230,7 +230,7 @@ void add(const std::vector<std::string>& files) {
 		if (!copyfile(file.c_str(), tmp.c_str())) {
 			std::cout << "Error: Could not copy file " << file << ".\n";
 
-			remove(".vcs/index");
+			removeDirectory(".vcs/index");
 
 			mkdir(".vcs/index");
 			std::cout << "Index emptied.\n";
@@ -400,7 +400,7 @@ void commitLast() {
 // Has the semantics that all files listed are committed, and no other
 // The index is preserved as it was, except that files present in the index and command line are removed from the index
 void commitFiles(const std::vector<std::string>& files) {
-	remove(".vcs/indexCopy"); // Just in case
+	removeDirectory(".vcs/indexCopy"); // Just in case
 
 	// Back up the index
 	if (!copyDirectory(".vcs/index", ".vcs/indexCopy")) { 
@@ -409,7 +409,7 @@ void commitFiles(const std::vector<std::string>& files) {
 	}
 
 	// Empty the index entirely
-	remove(".vcs/index");
+	removeDirectory(".vcs/index");
 	mkdir(".vcs/index");
 
 	for (const auto& file : files) {
