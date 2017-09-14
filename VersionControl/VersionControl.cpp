@@ -569,7 +569,7 @@ void checkout(std::string reference) {
 
 		// Unless skip is set, read the file in the commit out to disk
 		if (!skip) {
-			std::ofstream file(filename, std::ios::binary | std::ios::trunc);
+			std::fstream file(filename, std::ios::binary | std::ios::trunc);
 
 			std::getline(commit, line, ' '); // Line now holds the size field's identifier
 			size_t filesize;
@@ -586,6 +586,23 @@ void checkout(std::string reference) {
 
 			// And write the buffer back onto the disk
 			file.write(contents, filesize);
+
+			// Now, we do the safety comparison of the hashes
+			file.seekg(0, std::ios::beg);
+			std::string test(picosha2::hash256_hex_string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()));
+			file.close();
+			if (test == hash) { // We're pretty sure checkout succeeded.
+				std::cout << "File checked out successfully.\n\n";
+			}
+			else { // We have a mismatch
+				std::cerr << "WARNING: Hash mismatch on checking out " << filename << ".\n";
+				std::cerr << "commit stored hash \"" << hash << "\"\n";
+				std::cerr << "File written to disk has hash \"" << test << "\"\n\n";
+				std::cerr << "This means that either the commit was written improperly,\n";
+				std::cerr << "    the commit was modified after being written,\n";
+				std::cerr << "    or the file was not checked out correctly.\n\n";
+				std::cerr << "While not necessarily indicative of a problem, you might want to check the file.\n";
+			}
 		}
 	}
 }
