@@ -537,11 +537,15 @@ void checkout(std::string reference) {
 	}
 
 	// Now, we can iterate over files
+	size_t numFiles(0);
 	while (true) {
 		std::string filename;
 		std::getline(commit, filename);
 		if (filename == "COMMIT FOOTER") { // The footer is not a file, so we're done.
 			break;
+		}
+		else {
+			++numFiles;
 		}
 		std::cout << "Unpacking file " << filename << "\n";
 
@@ -616,4 +620,13 @@ void checkout(std::string reference) {
 			commit.seekg((size_t)commit.tellg() + filesize + 6); // 6 characters are past the EOF: five ampersands and a newline
 		}
 	}
+
+	// At this point, we've arrived at and read the line "COMMIT FOOTER"
+	std::cout << "Done reading files.\n";
+	std::getline(commit, line); // Discard the three ampersands that delineate the commit footer's header
+	std::getline(commit, line, ' '); // Discard up until the counter
+	size_t files;
+	commit >> files;
+	std::cout << "commit said we were supposed to read " << files << " files.\n";
+	std::cout << "We actually read " << numFiles << " files.\n";
 }
