@@ -18,7 +18,7 @@
 #include <iomanip>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
-enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log};
+enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log, checkout };
 
 // Function declarations for running commands
 void init();
@@ -27,6 +27,7 @@ void commit();
 void commitLast();
 void commitFiles(const std::vector<std::string>&);
 void log();
+void checkout(std::string);
 
 // Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
@@ -516,4 +517,16 @@ void log() {
 
 		commit.close();
 	}
+}
+
+// Given a commit (reference), copies files out to the working directory from the commit.
+// Reference can be one of:
+//  - A complete hash
+//  - HEAD (which shall be resolved to the complete hash of the current head commit)
+void checkout(std::string reference) {
+	if (reference == "HEAD") {
+		reference = getHeadHash();
+	}
+
+	std::ifstream commit(reference, std::ios::binary);
 }
