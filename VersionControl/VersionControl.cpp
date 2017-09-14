@@ -550,7 +550,7 @@ void checkout(std::string reference) {
 		std::getline(commit, hash);
 		hash = hash.substr(std::string("checksum ").size());
 
-		std::ifstream file(filename); // Test the file in the working directory to see if it matches our checksum
+		std::ifstream file(filename, std::ios::binary); // Test the file in the working directory to see if it matches our checksum
 		bool skip(false);
 		if (file) {
 			std::string test(picosha2::hash256_hex_string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()));
