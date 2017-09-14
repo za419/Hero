@@ -550,7 +550,8 @@ void checkout(std::string reference) {
 		std::getline(commit, hash);
 		hash = hash.substr(std::string("checksum ").size());
 
-		std::ifstream file(filename, std::ios::binary); // Test the file in the working directory to see if it matches our checksum
+		// Test the file in the working directory to see if it matches our checksum
+		std::ifstream file(filename, std::ios::binary);
 		bool skip(false);
 		if (file) {
 			std::string test(picosha2::hash256_hex_string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()));
@@ -564,6 +565,27 @@ void checkout(std::string reference) {
 				}
 				skip = (result != 'n');
 			}
+		}
+
+		// Unless skip is set, read the file in the commit out to disk
+		if (!skip) {
+			std::ofstream file(filename, std::ios::binary | std::ios::trunc);
+
+			std::getline(commit, line, ' '); // Line now holds the size field's identifier
+			size_t filesize;
+			commit >> filesize; // And now we let istream perform the input conversion
+			
+			// Now, get rid of the extraneous characters
+			std::getline(commit, line, '&');
+			std::getline(commit, line);
+
+			// The get pointer is now at the beginning of the file
+			// Allocate a buffer and read the prescribed size out of the file
+			char* contents(new char[filesize]);
+			commit.read(contents, filesize);
+
+			// And write the buffer back onto the disk
+			file.write(contents, filesize);
 		}
 	}
 }
