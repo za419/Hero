@@ -16,6 +16,7 @@
 #include <chrono>
 #include <vector>
 #include <iomanip>
+#include <cctype>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
 enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log, checkout };
@@ -533,5 +534,35 @@ void checkout(std::string reference) {
 
 	while (line != "&&&&&") { // Advance through commit header
 		std::getline(commit, line);
+	}
+
+	// Now, we can iterate over files
+	while (true) {
+		std::string filename;
+		std::getline(commit, filename);
+		if (filename == "COMMIT FOOTER") { // The footer is not a file, so we're done.
+			break;
+		}
+		std::cout << "Unpacking file " << filename << "\n";
+
+		// Get the stored file checksum
+		std::string hash;
+		std::getline(commit, hash);
+		hash = hash.substr(std::string("checksum ").size());
+
+		std::ifstream file(filename); // Test the file in the working directory to see if it matches our checksum
+		bool skip(false);
+		if (file) {
+			std::string test(picosha2::hash256_hex_string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()));
+			if (hash == test) { // Confirm with the user that they're okay with us skipping checkout based on hash
+				char result = '\0';
+				while (result != 'y' && result != 'n' && result != '\n') {
+					std::cout << "File on disk has same SHA256 as file in commit. Checkout anyway? (y/N) ";
+					char result = tolower(std::cin.get());
+					std::cout << std::endl;
+				}
+				skip = (result != 'n');
+			}
+		}
 	}
 }
