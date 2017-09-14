@@ -554,6 +554,7 @@ void checkout(std::string reference) {
 		bool skip(false);
 		if (file) {
 			std::string test(picosha2::hash256_hex_string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()));
+			file.close();
 			if (hash == test) { // Confirm with the user that they're okay with us skipping checkout based on hash
 				char result = '\0';
 				while (result != 'y' && result != 'n' && result != '\n') {
