@@ -529,4 +529,9 @@ void checkout(std::string reference) {
 	}
 
 	std::ifstream commit(reference, std::ios::binary);
+	std::string line;
+
+	while (line != "&&&&&") { // Advance through commit header
+		std::getline(commit, line);
+	}
 }
