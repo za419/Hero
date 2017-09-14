@@ -538,6 +538,7 @@ void checkout(std::string reference) {
 
 	// Now, we can iterate over files
 	size_t numFiles(0);
+	size_t totalSize(0);
 	while (true) {
 		std::string filename;
 		std::getline(commit, filename);
@@ -578,6 +579,7 @@ void checkout(std::string reference) {
 			std::getline(commit, line, ' '); // Line now holds the size field's identifier
 			size_t filesize;
 			commit >> filesize; // And now we let istream perform the input conversion
+			totalSize += filesize; // Add the size to the totalSize counter
 			
 			// Now, get rid of the extraneous characters
 			std::getline(commit, line, '&');
@@ -623,10 +625,17 @@ void checkout(std::string reference) {
 
 	// At this point, we've arrived at and read the line "COMMIT FOOTER"
 	std::cout << "Done reading files.\n";
+
 	std::getline(commit, line); // Discard the three ampersands that delineate the commit footer's header
 	std::getline(commit, line, ' '); // Discard up until the counter
 	size_t files;
 	commit >> files;
 	std::cout << "commit said we were supposed to read " << files << " files.\n";
 	std::cout << "We actually read " << numFiles << " files.\n";
+	
+	std::getline(commit, line, ' '); // Discard up until the next counter
+	size_t size;
+	commit >> size;
+	std::cout << "commit said we were supposed to read " << size << " bytes from files.\n";
+	std::cout << "We actually read " << totalSize << " bytes from files.\n";
 }
