@@ -603,6 +603,17 @@ void checkout(std::string reference) {
 				std::cerr << "    or the file was not checked out correctly.\n\n";
 				std::cerr << "While not necessarily indicative of a problem, you might want to check the file.\n";
 			}
+
+			// Read out the rest of the line to pass the file footer
+			std::getline(commit, line);
+		}
+		else { // Forward until we pass the file footer
+			std::getline(commit, line, ' '); // Line now holds the size field's identifier
+			size_t filesize;
+			commit >> filesize; // And now we let istream perform the input conversion
+			std::getline(commit, line, '&');
+			std::getline(commit, line);
+			commit.seekg((size_t)commit.tellg() + filesize + 6); // 6 characters are past the EOF: five ampersands and a newline
 		}
 	}
 }
