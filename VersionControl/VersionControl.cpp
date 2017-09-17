@@ -541,7 +541,7 @@ void checkout(std::string reference) {
 		reference = getHeadHash();
 	}
 
-	std::ifstream commit(reference, std::ios::binary);
+	std::ifstream commit(".vcs/commits/"+reference, std::ios::binary);
 	if (!commit) {
 		std::cerr << "Could not open commit " << reference << "\n";
 		exit(1);
