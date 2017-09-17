@@ -150,8 +150,8 @@ int main(int argc, char* argv[]) {
 		case Command::log:
 		{
 			log();
-      break;
-    }
+			break;
+		}
 		case Command::commitFiles:
 		{
 			std::vector<std::string> addFiles;
