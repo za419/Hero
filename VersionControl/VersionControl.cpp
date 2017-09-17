@@ -97,6 +97,9 @@ int main(int argc, char* argv[]) {
 			else if (!strcmp(argv[2], "-a")) {
 				mode = Command::commitLast;
 			}
+			else {
+				mode = Command::commitFiles;
+			}
 		}
 	}
 	else if (!strcmp(argv[1], "log")) {
@@ -147,6 +150,16 @@ int main(int argc, char* argv[]) {
 		case Command::log:
 		{
 			log();
+      break;
+    }
+		case Command::commitFiles:
+		{
+			std::vector<std::string> addFiles;
+			addFiles.reserve(argc - 2); // Reserve enough space for all files
+			for (int i = 2; i < argc; ++i) {
+				addFiles.emplace_back(argv[i]);
+			}
+			commitFiles(addFiles);
 			break;
 		}
 		default:
@@ -208,7 +221,7 @@ void init() {
 	// And write to the commit file
 	std::ofstream file(".vcs/commits/" + hash);
 	if (!file) {
-		remove(".vcs");
+		removeDirectory(".vcs");
 		std::cerr << "Could not initialize repository.\n";
 		exit(1);
 	}
@@ -218,7 +231,7 @@ void init() {
 	// Write the HEAD marker
 	std::ofstream head(".vcs/HEAD");
 	if (!head) {
-		remove(".vcs");
+		removeDirectory(".vcs");
 		std::cerr << "Could not initialize repository.\n";
 		exit(1);
 	}
@@ -237,9 +250,7 @@ void add(const std::vector<std::string>& files) {
 		if (!copyfile(file.c_str(), tmp.c_str())) {
 			std::cout << "Error: Could not copy file " << file << ".\n";
 
-			remove(".vcs/index");
-
-			mkdir(".vcs/index");
+			emptyDirectory(".vcs/index");
 			std::cout << "Index emptied.\n";
 			std::cout << "Please re-add the appropriate files to the index.\n";
 
@@ -284,10 +295,14 @@ void commit() {
 
 	// Do the same for the commit message
 	std::cout << "Commit message (type Ctrl-X then press enter to end):\n";
-	std::getline(std::cin, title, char(24));
-	title = escaped(title, std::string((char)24,1), ""); // Just in case
-	title = escaped(title, "/", "/sl;");
-	commit << "message &" << escaped(title, "&", "/amp;") << "&\n";
+	std::getline(std::cin, message, char(24));
+	message = escaped(message, std::string((char)24,1), ""); // Just in case
+	message = escaped(message, "/", "/sl;");
+	commit << "message &" << escaped(message, "&", "/amp;") << "&\n";
+
+	// Alert the user that we're working on the commit
+	// The commit process can take some time, so we don't want the user to wonder if they need to enter ^x again
+	std::cout << "Creating new commit \'" << title << "\'..." << std::endl;
 
 	// Now, get the list of files in the index, and add their names to the commit header.
 	std::vector<std::string> files;
@@ -346,7 +361,7 @@ void commit() {
 	commit << "size " << totalSize << "\n";
 	commit << "&&&&&\n";
 
-	// Finally, write the commit to disk
+	// Finally, write the commit to disk and empty the index
 	// First, generate the hash of the commit
 	std::string contents = commit.str();
 	std::string hash = picosha2::hash256_hex_string(contents);
@@ -369,6 +384,11 @@ void commit() {
 	}
 	head << hash << "\n";
 	head.close();
+
+	emptyDirectory(".vcs/index");
+
+	// Confirm to the user that we succeeded
+	std::cout << "Done.\n";
 }
 
 // Handles 'commit -a'
@@ -407,8 +427,46 @@ void commitLast() {
 }
 
 // Handles commit with a list of files
+// Has the semantics that all files listed are committed, and no other
+// The index is preserved as it was, except that files present in the index and command line are removed from the index
 void commitFiles(const std::vector<std::string>& files) {
+	removeDirectory(".vcs/indexCopy"); // Just in case
 
+	// Back up the index
+	if (!copyDirectory(".vcs/index", ".vcs/indexCopy")) { 
+		std::cerr << "Could not back up repository index.\n";
+		exit(1);
+	}
+
+	// Empty the index entirely
+	emptyDirectory(".vcs/index");
+
+	for (const auto& file : files) {
+		remove((".vcs/indexCopy/"+file).c_str()); // Make sure the file to be committed is removed from the copied index
+	}
+
+	// Add all commandline files
+	add(files);
+	// And then commit.
+	commit();
+
+	removeDirectory(".vcs/index");
+	// Restore the index, minus duplicated files
+	if (!copyDirectory(".vcs/indexCopy", ".vcs/index")) {
+		std::cerr << "Could not restore index.\n";
+		removeDirectory(".vcs/indexCopy");
+		if (mkdir(".vcs/index") && errno != EEXIST) {
+			std::cerr << "Also could not create index directory.\n";
+			std::cerr << "Please ensure that the folder \".vcs\" directory is writable...\n";
+			std::cerr << "Then create a folder named \"index\" inside it before running \"add\" or \"commit\".\n";
+			exit(errno);
+		}
+		else {
+			std::cerr << "The index has been emptied.\n";
+			exit(2);
+		}
+	}
+	removeDirectory(".vcs/indexCopy");
 }
 
 // Produces a log of the commit history by the commit headers

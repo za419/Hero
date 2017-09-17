@@ -15,6 +15,14 @@
 #include <sys/stat.h>
 #endif
 
+// Now, rmdir
+#if defined(_WIN32)
+#include <direct.h>
+#define rmdir(dirname) _rmdir((dirname))
+#else
+#include <unistd.h>
+#endif
+
 // Next, a function to copy files
 #if defined(_WIN32)
 #include <Windows.h>
@@ -40,6 +48,8 @@ bool copyfile(const char* source, const char* dest) {
 
 	close(src);
 	close(dest);
+
+	return out;
 #endif
 }
 
@@ -95,5 +105,56 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 	else
 		return errno;
 #endif
+}
+
+// All functions below here are not technically shims, but they depend on the above and are not currently numerous enough to merit their own header.
+
+// emptyDirectory: Deletes all files in a given directory
+// Returns 0, or the return value of the first function to return an error
+int emptyDirectory(const std::string& dir) {
+	std::vector<std::string> files;
+	if (int err = filesInDirectory(dir, files)) {
+		return err;
+	}
+
+	for (const auto& file : files) {
+		if (int err = remove((dir + "/" + file).c_str())) {
+			return err;
+		}
+	}
+
+	return 0;
+}
+
+// Now removeDirectory (different from rmdir in that it doesn't fail on non-empty directories)
+// Returns 0, or the return value of the first function to return an error
+int removeDirectory(const std::string& dir) {
+	if (int err = emptyDirectory(dir)) {
+		return err;
+	}
+
+	if (int err = rmdir(dir.c_str())) {
+		return err;
+	}
+
+	return 0;
+}
+
+// Returns whether all operations succeeded
+bool copyDirectory(const std::string& source, const std::string& dest) { 
+	mkdir(dest.c_str());
+
+	std::vector<std::string> files;
+	if (filesInDirectory(source, files)) {
+		return false;
+	}
+
+	for (const auto& file : files) {
+		if (!copyfile((source + "/" + file).c_str(), (dest + "/" + file).c_str())) {
+			return false;
+		}
+	}
+
+	return true;
 }
 #endif // !CROSSPLATFORM_H
