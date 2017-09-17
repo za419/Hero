@@ -542,6 +542,11 @@ void checkout(std::string reference) {
 	}
 
 	std::ifstream commit(reference, std::ios::binary);
+	if (!commit) {
+		std::cerr << "Could not open commit " << reference << "\n";
+		exit(1);
+	}
+
 	std::string line;
 
 	while (line != "&&&&&") { // Advance through commit header
