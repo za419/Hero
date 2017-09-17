@@ -171,6 +171,11 @@ int main(int argc, char* argv[]) {
 			commitFiles(addFiles);
 			break;
 		}
+		case Command::checkout:
+		{
+			checkout(argv[2]);
+			break;
+		}
 		default:
 		{
 			std::cerr << "Unrecognized commandline:";
