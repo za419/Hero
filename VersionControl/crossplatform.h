@@ -105,6 +105,8 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 #endif
 }
 
+// All functions below here are not technically shims, but they depend on the above and are not currently numerous enough to merit their own header.
+
 // emptyDirectory: Deletes all files in a given directory
 // Returns 0, or the return value of the first function to return an error
 int emptyDirectory(const std::string& dir) {
@@ -136,8 +138,8 @@ int removeDirectory(const std::string& dir) {
 	return 0;
 }
 
-// Technically, this isn't a shim. But, I'm still pursuing a more efficient way to do this.
-bool copyDirectory(const std::string& source, const std::string& dest) { // Returns whether all operations succeeded
+// Returns whether all operations succeeded
+bool copyDirectory(const std::string& source, const std::string& dest) { 
 	mkdir(dest.c_str());
 
 	std::vector<std::string> files;
