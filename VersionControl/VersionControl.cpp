@@ -277,6 +277,10 @@ void commit() {
 	std::getline(std::cin, title, char(24));
 	commit << "message &" << escaped(title, "&", "&amp;") << "&\n";
 
+	// Alert the user that we're working on the commit
+	// The commit process can take some time, so we don't want the user to wonder if they need to enter ^x again
+	std::cout << "Creating new commit " << title << "...\n";
+
 	// Now, get the list of files in the index, and add their names to the commit header.
 	std::vector<std::string> files;
 	if (int err = filesInDirectory(".vcs/index", files)) {
@@ -359,6 +363,9 @@ void commit() {
 	head.close();
 
 	emptyDirectory(".vcs/index");
+
+	// Confirm to the user that we succeeded
+	std::cout << "Done.\n";
 }
 
 // Handles 'commit -a'
