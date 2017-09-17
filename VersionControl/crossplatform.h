@@ -48,6 +48,8 @@ bool copyfile(const char* source, const char* dest) {
 
 	close(src);
 	close(dest);
+
+	return out;
 #endif
 }
 
