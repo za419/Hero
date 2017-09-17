@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
 	else if (!strcmp(argv[1], "checkout")) {
 		mode = Command::checkout;
 
-		if (argc > 2) {
+		if (argc!=3 || !strcmp(argv[2], "-h")) {
 			usage(argv[0], Command::checkout);
 		}
 	}
