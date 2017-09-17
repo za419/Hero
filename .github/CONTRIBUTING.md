@@ -204,7 +204,7 @@ implemented, should be the next ones to be implemented, as soon as feasible.
 Along with these two features, the addition of two commands is intended for
 version 0.02:
 
- - [ ] `log` will, starting at the HEAD, display all commits back to the initial
+ - [x] `log` will, starting at the HEAD, display all commits back to the initial
 commit
 
  - [ ] `checkout` will, given a complete hash, or 'HEAD', overwrite the contents

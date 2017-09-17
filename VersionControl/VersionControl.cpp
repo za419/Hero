@@ -15,9 +15,10 @@
 #include <sstream>
 #include <chrono>
 #include <vector>
+#include <iomanip>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
-enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles };
+enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log};
 
 // Function declarations for running commands
 void init();
@@ -25,6 +26,7 @@ void add(const std::vector<std::string>&);
 void commit();
 void commitLast();
 void commitFiles(const std::vector<std::string>&);
+void log();
 
 // Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
@@ -50,11 +52,17 @@ void usage(char* invoke, Command source) {
 		std::cout << "These files will be treated as those which shall be the ONLY ones committed.\n";
 		std::cout << "Note that if the index is altered while this command is running, the commit may be produced in an inconsistent state.\n";
 		break;
+	case Command::log:
+		std::cout << invoke << " log\n";
+		std::cout << "Outputs a version history of the repository by commits.\n";
+		std::cout << "No arguments are required or allowed.\n";
+		break;
 	case Command::unknownCommand:
 	default:
 		std::cout << invoke << " init\n";
 		std::cout << invoke << " add [files]\n";
 		std::cout << invoke << " commit [files] [-a]\n";
+		std::cout << invoke << " log\n";
 		break;
 	}
 	exit(0);
@@ -82,7 +90,7 @@ int main(int argc, char* argv[]) {
 	else if (!strcmp(argv[1], "commit")) {
 		mode = Command::commit;
 
-		if (argc>2) {
+		if (argc > 2) {
 			if (!strcmp(argv[2], "-h")) {
 				usage(argv[0], Command::commit);
 			}
@@ -92,6 +100,13 @@ int main(int argc, char* argv[]) {
 			else {
 				mode = Command::commitFiles;
 			}
+		}
+	}
+	else if (!strcmp(argv[1], "log")) {
+		mode = Command::log;
+
+		if (argc > 2) {
+			usage(argv[0], Command::log);
 		}
 	}
 	else if (!strcmp(argv[1], "init")) {
@@ -132,6 +147,11 @@ int main(int argc, char* argv[]) {
 			commitLast();
 			break;
 		}
+		case Command::log:
+		{
+			log();
+      break;
+    }
 		case Command::commitFiles:
 		{
 			std::vector<std::string> addFiles;
@@ -183,7 +203,7 @@ void init() {
 
 	// Finish off the header
 	commit << "title Initial Commit\n";
-	commit << "message This commit marks the initialization of the repository.\n";
+	commit << "message &This commit marks the initialization of the repository.&\n";
 	commit << "files []\n";
 	commit << "&&&&&\n";
 
@@ -270,12 +290,15 @@ void commit() {
 	// Get commit title from the user and write, escaped, to commit
 	std::cout << "Commit title: ";
 	std::getline(std::cin, title);
-	commit << "title " << escaped(title, "&", "&amp;") << "\n";
+	title = escaped(title, "/", "/sl;");
+	commit << "title " << escaped(title, "&", "/amp;") << "\n";
 
 	// Do the same for the commit message
 	std::cout << "Commit message (type Ctrl-X then press enter to end):\n";
 	std::getline(std::cin, message, char(24));
-	commit << "message &" << escaped(message, "&", "&amp;") << "&\n";
+	message = escaped(message, std::string((char)24,1), ""); // Just in case
+	message = escaped(message, "/", "/sl;");
+	commit << "message &" << escaped(message, "&", "/amp;") << "&\n";
 
 	// Alert the user that we're working on the commit
 	// The commit process can take some time, so we don't want the user to wonder if they need to enter ^x again
@@ -444,4 +467,53 @@ void commitFiles(const std::vector<std::string>& files) {
 		}
 	}
 	removeDirectory(".vcs/indexCopy");
+}
+
+// Produces a log of the commit history by the commit headers
+void log() {
+	std::string hash(getHeadHash());
+	std::ifstream commit;
+
+	while (hash != "0") {
+		commit.open(".vcs/commits/" + hash);
+		if (!commit) {
+			std::cerr << "Could not access commit " << hash << "\n";
+			exit(1);
+		}
+		std::string line;
+
+		std::cout << "commit " << hash << "\n";
+
+		// Discard two lines. The next line is the parent.
+		std::getline(commit, line);
+		std::getline(commit, line);
+
+		// Now, get the parent and extract the hash
+		std::getline(commit, line);
+		hash = line.substr(7); // There are 7 characters before the hash begins: "parent "
+
+		// The next line is the date
+		std::getline(commit, line);
+		std::cout << "Committed on " << line.substr(5); // 5 characters: "date "
+
+		// And then the time
+		std::getline(commit, line);
+		std::cout << " at " << line.substr(5) << "\n"; // Again, 5 characters: "time "
+
+		// The title
+		std::getline(commit, line);
+		line = escaped(line.substr(6), "/amp;", "&");
+		line = escaped(line, "/sl;", "/");
+		std::cout << "\t" << line << "\n\n"; // 6 characters: "title "
+
+		// And finally the message
+		std::getline(commit, line, '&'); // Discard the beginning
+		std::getline(commit, line, '&'); // And fetch the entire message
+		line = escaped(line, "/amp;", "&");
+		line = escaped(line, "/sl;", "/");
+		line = escaped(line, "\n", "\n\t"); // Indent every line of the commit message
+		std::cout << "\t" << line << "\n\n";
+
+		commit.close();
+	}
 }
