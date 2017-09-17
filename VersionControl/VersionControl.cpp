@@ -551,6 +551,7 @@ void checkout(std::string reference) {
 
 	while (line != "&&&&&") { // Advance through commit header
 		std::getline(commit, line);
+		line = escaped(line, "\r", "");
 	}
 
 	// Now, we can iterate over files
@@ -559,6 +560,7 @@ void checkout(std::string reference) {
 	while (true) {
 		std::string filename;
 		std::getline(commit, filename);
+		filename = escaped(filename, "\r", "");
 		if (filename == "COMMIT FOOTER") { // The footer is not a file, so we're done.
 			break;
 		}
@@ -570,6 +572,7 @@ void checkout(std::string reference) {
 		// Get the stored file checksum
 		std::string hash;
 		std::getline(commit, hash);
+		hash = escaped(hash, "/r", "");
 		hash = hash.substr(std::string("checksum ").size());
 
 		// Test the file in the working directory to see if it matches our checksum
