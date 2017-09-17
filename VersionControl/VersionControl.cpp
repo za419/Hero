@@ -230,9 +230,7 @@ void add(const std::vector<std::string>& files) {
 		if (!copyfile(file.c_str(), tmp.c_str())) {
 			std::cout << "Error: Could not copy file " << file << ".\n";
 
-			removeDirectory(".vcs/index");
-
-			mkdir(".vcs/index");
+			emptyDirectory(".vcs/index");
 			std::cout << "Index emptied.\n";
 			std::cout << "Please re-add the appropriate files to the index.\n";
 
@@ -360,8 +358,7 @@ void commit() {
 	head << hash << "\n";
 	head.close();
 
-	removeDirectory(".vcs/index");
-	mkdir(".vcs/index");
+	emptyDirectory(".vcs/index");
 }
 
 // Handles 'commit -a'
@@ -412,8 +409,7 @@ void commitFiles(const std::vector<std::string>& files) {
 	}
 
 	// Empty the index entirely
-	removeDirectory(".vcs/index");
-	mkdir(".vcs/index");
+	emptyDirectory(".vcs/index");
 
 	for (const auto& file : files) {
 		remove((".vcs/indexCopy/"+file).c_str()); // Make sure the file to be committed is removed from the copied index
