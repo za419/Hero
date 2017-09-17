@@ -279,7 +279,7 @@ void commit() {
 
 	// Alert the user that we're working on the commit
 	// The commit process can take some time, so we don't want the user to wonder if they need to enter ^x again
-	std::cout << "Creating new commit " << title << "...\n";
+	std::cout << "Creating new commit " << title << "..." << std::endl;
 
 	// Now, get the list of files in the index, and add their names to the commit header.
 	std::vector<std::string> files;
