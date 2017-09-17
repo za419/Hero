@@ -274,8 +274,8 @@ void commit() {
 
 	// Do the same for the commit message
 	std::cout << "Commit message (type Ctrl-X then press enter to end):\n";
-	std::getline(std::cin, title, char(24));
-	commit << "message &" << escaped(title, "&", "&amp;") << "&\n";
+	std::getline(std::cin, message, char(24));
+	commit << "message &" << escaped(message, "&", "&amp;") << "&\n";
 
 	// Alert the user that we're working on the commit
 	// The commit process can take some time, so we don't want the user to wonder if they need to enter ^x again
