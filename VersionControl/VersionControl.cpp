@@ -111,6 +111,13 @@ int main(int argc, char* argv[]) {
 			usage(argv[0], Command::log);
 		}
 	}
+	else if (!strcmp(argv[1], "checkout")) {
+		mode = Command::checkout;
+
+		if (argc > 2) {
+			usage(argv[0], Command::checkout);
+		}
+	}
 	else if (!strcmp(argv[1], "init")) {
 		mode = Command::init;
 
