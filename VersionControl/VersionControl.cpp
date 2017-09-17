@@ -631,6 +631,7 @@ void checkout(std::string reference) {
 			}
 
 			// Read out the rest of the line to pass the file footer
+			std::getline(commit, line, '&');
 			std::getline(commit, line);
 		}
 		else { // Forward until we pass the file footer
