@@ -594,7 +594,7 @@ void checkout(std::string reference) {
 
 		// Unless skip is set, read the file in the commit out to disk
 		if (!skip) {
-			std::fstream file(filename, std::ios::binary | std::ios::trunc);
+			std::fstream file(filename, std::ios::in | std::ios::out | std::ios::binary | std::ios::trunc);
 			if (!file) {
 				std::cerr << "Unable to open file " << filename << " for writing.\n";
 				exit(2);
