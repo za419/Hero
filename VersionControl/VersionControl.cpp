@@ -595,6 +595,10 @@ void checkout(std::string reference) {
 		// Unless skip is set, read the file in the commit out to disk
 		if (!skip) {
 			std::fstream file(filename, std::ios::binary | std::ios::trunc);
+			if (!file) {
+				std::cerr << "Unable to open file " << filename << " for writing.\n";
+				exit(2);
+			}
 
 			std::getline(commit, line, ' '); // Line now holds the size field's identifier
 			size_t filesize;
