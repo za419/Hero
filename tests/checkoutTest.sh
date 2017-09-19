@@ -2,6 +2,8 @@
 
 # Tests the checkout function
 
+rm -fr .vcs
+
 ../x64/Debug/VersionControl.exe init
 git checkout eb2cef163bffc4f3f38663843e5a35a0a4f5744a
 ../x64/Debug/VersionControl.exe commit checkoutTest.txt
