@@ -5,9 +5,9 @@
 rm -fr .vcs
 
 ../x64/Debug/VersionControl.exe init
-git checkout eb2cef163bffc4f3f38663843e5a35a0a4f5744a
+git checkout eb2cef163bffc4f3f38663843e5a35a0a4f5744a checkoutTest.txt
 ../x64/Debug/VersionControl.exe commit checkoutTest.txt
-git checkout add-checkout
+git checkout add-checkout checkoutTest.txt
 ../x64/Debug/VersionControl.exe commit checkoutTest.txt
 
 i=0
