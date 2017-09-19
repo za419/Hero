@@ -428,7 +428,7 @@ void commitLast() {
 
 	// Read all entries, using the stream as parser, into the vector
 	while (true) {
-		std::getline(filestream, line);
+		std::getline(filestream, line, ',');
 		if (filestream.eof())
 			break;
 		files.emplace_back(line);
