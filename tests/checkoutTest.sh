@@ -23,7 +23,7 @@ do
     fi
 done
 
-../x64/Debug/VersionControl.exe checkout $hash
+../x64/Debug/VersionControl.exe checkout "$hash"
 cat checkoutTest.txt
 sleep 10
 ../x64/Debug/VersionControl.exe checkout HEAD
