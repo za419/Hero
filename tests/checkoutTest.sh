@@ -6,9 +6,9 @@ rm -fr .vcs
 
 ../x64/Debug/VersionControl.exe init
 git checkout eb2cef163bffc4f3f38663843e5a35a0a4f5744a checkoutTest.txt
-../x64/Debug/VersionControl.exe commit checkoutTest.txt
+echo -e "\021\00A\018\00A" | ../x64/Debug/VersionControl.exe commit checkoutTest.txt
 git checkout add-checkout checkoutTest.txt
-../x64/Debug/VersionControl.exe commit checkoutTest.txt
+echo -e "\022\00A\018\00A" | ../x64/Debug/VersionControl.exe commit checkoutTest.txt
 
 i=0
 hash=""
