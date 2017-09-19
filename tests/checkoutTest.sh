@@ -12,18 +12,21 @@ echo -e "\022\00A\018\00A" | ../x64/Debug/VersionControl.exe commit checkoutTest
 
 i=0
 hash=""
-../x64/Debug/VersionControl.exe log | while read line
+while read -r line
 do
-    if [ "$line" == "commit *" ]; then
+    if [[ "$line" == "commit "* ]]; then
         if [ $i == 1 ]; then
-            hash = echo $line | sed -ne 's/^commit //p'
+            hash=$(echo $line | sed -ne 's/^commit //p')
+            i=$((i+1))
         else
-            i=i+1
+            i=$((i+1))
         fi
     fi
-done
+done <<EOT
+$(../x64/Debug/VersionControl.exe log)
+EOT
 
-../x64/Debug/VersionControl.exe checkout "$hash"
+eval ../x64/Debug/VersionControl.exe checkout $(echo $hash)
 cat checkoutTest.txt
 sleep 10
 ../x64/Debug/VersionControl.exe checkout HEAD
