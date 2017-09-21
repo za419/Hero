@@ -1,4 +1,4 @@
-// VersionControl.cpp : Defines the entry point for the console application.
+// hero.cpp : Defines the entry point for the console application.
 //
 
 #include "../date/date.h"
