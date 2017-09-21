@@ -59,6 +59,14 @@ void usage(char* invoke, Command source) {
 		std::cout << "Outputs a version history of the repository by commits.\n";
 		std::cout << "No arguments are required or allowed.\n";
 		break;
+	case Command::checkout:
+		std::cout << invoke << " checkout <reference>\n";
+		std::cout << "Checks out the files committed in the referenced commit.\n";
+		std::cout << "<reference> can be any of:\n";
+		std::cout << "  1. The hash of the commit to check out\n";
+		std::cout << "  2. HEAD\n";
+		std::cout << "Any other input is considered an error.\n";
+		break;
 	case Command::unknownCommand:
 	default:
 		std::cout << invoke << " init\n";
