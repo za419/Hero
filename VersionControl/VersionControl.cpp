@@ -381,7 +381,7 @@ void commit() {
 	std::string hash = picosha2::hash256_hex_string(contents);
 
 	// And write to the commit file
-	std::ofstream file(".vcs/commits/" + hash);
+	std::ofstream file(".vcs/commits/" + hash, std::ios::binary);
 	if (!file) {
 		std::cerr << "Could not create commit.\n";
 		exit(1);
