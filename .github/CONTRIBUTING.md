@@ -180,45 +180,23 @@ the feature you're requesting, which includes all of:
 
 This section details, in fairly general turns, my plans for expanding the project.
 
-At the time of writing, version 0.01 has been released. This fits the following
+At the time of writing, version 0.02 has been released. This fits the following
 requirements:
-
- - [x] Can initialize a repository
-
- - [x] Can add files to index (for later commit)
-
- - [x] Can create a commit from files in the index
-
-There are only two features which are documented, but not implemented in version
-0.01:
 
  - [x] Can use `commit -a` to automatically add files that were in the last
 commit to the commit being made
 
- - [ ] Can use `commit` with a list of files to automatically add these files
+ - [x] Can use `commit` with a list of files to automatically add these files
 and commit
-
-These features, as they are noted in the usage information but not actually
-implemented, should be the next ones to be implemented, as soon as feasible.
-
-Along with these two features, the addition of two commands is intended for
-version 0.02:
 
  - [x] `log` will, starting at the HEAD, display all commits back to the initial
 commit
 
- - [ ] `checkout` will, given a complete hash, or 'HEAD', overwrite the contents
+ - [x] `checkout` will, given a complete hash, or 'HEAD', overwrite the contents
 of applicable files with the versions in the given commit
 
-   - If this is given a commit besides the HEAD, either the implementation
-should take steps to either:
-
-     1. Prevent a new commit from being made
-
-     2. Warn the user about making a commit
-
-     3. Allow commits to be made, but off of the checked out commit (probably
-the correct option, in conjunction with 2, once branches are implemented)
+   - If this is given a commit besides the HEAD, the implementation should warn
+the user about making commits
 
    - If this is given HEAD, it should remove that protection
 
