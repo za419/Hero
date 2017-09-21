@@ -16,9 +16,10 @@
 #include <chrono>
 #include <vector>
 #include <iomanip>
+#include <cctype>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
-enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log};
+enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log, checkout };
 
 // Function declarations for running commands
 void init();
@@ -27,6 +28,7 @@ void commit();
 void commitLast();
 void commitFiles(const std::vector<std::string>&);
 void log();
+void checkout(std::string);
 
 // Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
@@ -56,6 +58,14 @@ void usage(char* invoke, Command source) {
 		std::cout << invoke << " log\n";
 		std::cout << "Outputs a version history of the repository by commits.\n";
 		std::cout << "No arguments are required or allowed.\n";
+		break;
+	case Command::checkout:
+		std::cout << invoke << " checkout <reference>\n";
+		std::cout << "Checks out the files committed in the referenced commit.\n";
+		std::cout << "<reference> can be any of:\n";
+		std::cout << "  1. The hash of the commit to check out\n";
+		std::cout << "  2. HEAD\n";
+		std::cout << "Any other input is considered an error.\n";
 		break;
 	case Command::unknownCommand:
 	default:
@@ -109,6 +119,13 @@ int main(int argc, char* argv[]) {
 			usage(argv[0], Command::log);
 		}
 	}
+	else if (!strcmp(argv[1], "checkout")) {
+		mode = Command::checkout;
+
+		if (argc!=3 || !strcmp(argv[2], "-h")) {
+			usage(argv[0], Command::checkout);
+		}
+	}
 	else if (!strcmp(argv[1], "init")) {
 		mode = Command::init;
 
@@ -160,6 +177,11 @@ int main(int argc, char* argv[]) {
 				addFiles.emplace_back(argv[i]);
 			}
 			commitFiles(addFiles);
+			break;
+		}
+		case Command::checkout:
+		{
+			checkout(argv[2]);
 			break;
 		}
 		default:
@@ -367,7 +389,7 @@ void commit() {
 	std::string hash = picosha2::hash256_hex_string(contents);
 
 	// And write to the commit file
-	std::ofstream file(".vcs/commits/" + hash);
+	std::ofstream file(".vcs/commits/" + hash, std::ios::binary);
 	if (!file) {
 		std::cerr << "Could not create commit.\n";
 		exit(1);
@@ -414,7 +436,7 @@ void commitLast() {
 
 	// Read all entries, using the stream as parser, into the vector
 	while (true) {
-		std::getline(filestream, line);
+		std::getline(filestream, line, ',');
 		if (filestream.eof())
 			break;
 		files.emplace_back(line);
@@ -516,4 +538,137 @@ void log() {
 
 		commit.close();
 	}
+}
+
+// Given a commit (reference), copies files out to the working directory from the commit.
+// Reference can be one of:
+//  - A complete hash
+//  - HEAD (which shall be resolved to the complete hash of the current head commit)
+void checkout(std::string reference) {
+	if (reference == "HEAD") {
+		reference = getHeadHash();
+	}
+
+	std::ifstream commit(".vcs/commits/"+reference, std::ios::binary);
+	if (!commit) {
+		std::cerr << "Could not open commit " << reference << "\n";
+		exit(1);
+	}
+
+	std::string line;
+
+	while (line != "&&&&&") { // Advance through commit header
+		std::getline(commit, line);
+		line = escaped(line, "\r", "");
+	}
+
+	// Now, we can iterate over files
+	size_t numFiles(0);
+	size_t totalSize(0);
+	while (true) {
+		std::string filename;
+		std::getline(commit, filename);
+		filename = escaped(filename, "\r", "");
+		if (filename == "COMMIT FOOTER") { // The footer is not a file, so we're done.
+			break;
+		}
+		else {
+			++numFiles;
+		}
+		std::cout << "Unpacking file " << filename << "\n";
+
+		// Get the stored file checksum
+		std::string hash;
+		std::getline(commit, hash);
+		hash = escaped(hash, "/r", "");
+		hash = hash.substr(std::string("checksum ").size());
+
+		// Test the file in the working directory to see if it matches our checksum
+		std::ifstream file(filename, std::ios::binary);
+		bool skip(false);
+		if (file) {
+			std::string test(picosha2::hash256_hex_string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()));
+			file.close();
+			if (hash == test) { // Confirm with the user that they're okay with us skipping checkout based on hash
+				char result = '\0';
+				while (result != 'y' && result != 'n' && result != '\n') {
+					std::cout << "File on disk has same SHA256 as file in commit. Checkout anyway? (y/N) ";
+					char result = tolower(std::cin.get());
+					std::cout << std::endl;
+				}
+				skip = (result != 'n');
+			}
+		}
+
+		// Unless skip is set, read the file in the commit out to disk
+		if (!skip) {
+			std::fstream file(filename, std::ios::in | std::ios::out | std::ios::binary | std::ios::trunc);
+			if (!file) {
+				std::cerr << "Unable to open file " << filename << " for writing.\n";
+				exit(2);
+			}
+
+			std::getline(commit, line, ' '); // Line now holds the size field's identifier
+			size_t filesize;
+			commit >> filesize; // And now we let istream perform the input conversion
+			totalSize += filesize; // Add the size to the totalSize counter
+			
+			// Now, get rid of the extraneous characters
+			std::getline(commit, line, '&');
+			std::getline(commit, line);
+
+			// The get pointer is now at the beginning of the file
+			// Allocate a buffer and read the prescribed size out of the file
+			char* contents(new char[filesize]);
+			commit.read(contents, filesize);
+
+			// And write the buffer back onto the disk
+			file.write(contents, filesize);
+
+			// Now, we do the safety comparison of the hashes
+			file.seekg(0, std::ios::beg);
+			std::string test(picosha2::hash256_hex_string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()));
+			file.close();
+			if (test == hash) { // We're pretty sure checkout succeeded.
+				std::cout << "File checked out successfully.\n\n";
+			}
+			else { // We have a mismatch
+				std::cerr << "WARNING: Hash mismatch on checking out " << filename << ".\n";
+				std::cerr << "commit stored hash \"" << hash << "\"\n";
+				std::cerr << "File written to disk has hash \"" << test << "\"\n\n";
+				std::cerr << "This means that either the commit was written improperly,\n";
+				std::cerr << "    the commit was modified after being written,\n";
+				std::cerr << "    or the file was not checked out correctly.\n\n";
+				std::cerr << "While not necessarily indicative of a problem, you might want to check the file.\n";
+			}
+
+			// Read out the rest of the line to pass the file footer
+			std::getline(commit, line, '&');
+			std::getline(commit, line);
+		}
+		else { // Forward until we pass the file footer
+			std::getline(commit, line, ' '); // Line now holds the size field's identifier
+			size_t filesize;
+			commit >> filesize; // And now we let istream perform the input conversion
+			std::getline(commit, line, '&');
+			std::getline(commit, line);
+			commit.seekg((size_t)commit.tellg() + filesize + 6); // 6 characters are past the EOF: five ampersands and a newline
+		}
+	}
+
+	// At this point, we've arrived at and read the line "COMMIT FOOTER"
+	std::cout << "Done reading files.\n";
+
+	std::getline(commit, line); // Discard the three ampersands that delineate the commit footer's header
+	std::getline(commit, line, ' '); // Discard up until the counter
+	size_t files;
+	commit >> files;
+	std::cout << "commit said we were supposed to read " << files << " files.\n";
+	std::cout << "We actually read " << numFiles << " files.\n";
+	
+	std::getline(commit, line, ' '); // Discard up until the next counter
+	size_t size;
+	commit >> size;
+	std::cout << "commit said we were supposed to read " << size << " bytes from files.\n";
+	std::cout << "We actually read " << totalSize << " bytes from files.\n";
 }
