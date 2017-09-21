@@ -5,7 +5,7 @@
 #include "../PicoSHA2/picosha2.h"
 #include "crossplatform.h"
 #include "Utils.h"
-#include "VersionControl.h"
+#include "hero.h"
 
 #include <iostream>
 #include <cstdint>
