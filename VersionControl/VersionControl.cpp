@@ -417,15 +417,23 @@ void commit() {
 	file.write(contents.c_str(), contents.size());
 	file.close();
 
-	// And update the HEAD marker to match this commit
-	std::ofstream head(".vcs/HEAD", std::ios::trunc);
-	if (!head) {
-		remove((".vcs/commits/" + hash).c_str());
-		std::cerr << "Could not create commit.\n";
-		exit(2);
+	// If we're in a detached state, warn about not updating HEAD and print our hash
+	if (detached) {
+		std::cerr << "Warning: HEAD marker not updated: You are in a detached state.\n";
+		std::cerr << "This commit can be accessed in the future via its hash:\n";
+		std::cerr << hash << "\n";
 	}
-	head << hash << "\n";
-	head.close();
+	// Else, update the HEAD marker to match this commit
+	else {
+		std::ofstream head(".vcs/HEAD", std::ios::trunc);
+		if (!head) {
+			remove((".vcs/commits/" + hash).c_str());
+			std::cerr << "Could not create commit.\n";
+			exit(2);
+		}
+		head << hash << "\n";
+		head.close();
+	}
 
 	emptyDirectory(".vcs/index");
 
