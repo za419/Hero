@@ -286,6 +286,26 @@ void add(const std::vector<std::string>& files) {
 // Copy the files in the index into a commit file in the commits folder
 // This file will have its SHA256 as its filename, and will have formatting compatible with the format specified in commit-blob.txt
 void commit() {
+	bool detached(false);
+
+	// Check for the commit lock
+	if (std::ifstream lock = std::ifstream(".vcs/COMMIT_LOCK", std::ios::binary)) {
+		// Committing is locked: We should issue a warning 
+		detached = true;
+
+		std::string hash;
+		std::getline(lock, hash);
+
+		std::cerr << "Warning: You are in detached head state.\n";
+		std::cerr << "The head commit is " << getHeadHash() << ".\n";
+		std::cerr << "The currently checked out commit is recorded as " << hash << ".\n";
+		std::cerr << "Committing in this state will not update the HEAD marker, and consequently\n";
+		std::cerr << "  any commit you might make here will not appear in logs and will only be\n";
+		std::cerr << "  reachable if you know their hash.\n";
+		std::cerr << "To avoid this, copy your work to another location, press Ctrl-C to stop commit,\n";
+		std::cerr << "  and run `checkout HEAD`. You can then copy your work back and commit.\n";
+	}
+
 	std::string title; // Commit title
 	std::string message; // Commit message
 	std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
