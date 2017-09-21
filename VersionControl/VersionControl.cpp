@@ -545,8 +545,23 @@ void log() {
 //  - A complete hash
 //  - HEAD (which shall be resolved to the complete hash of the current head commit)
 void checkout(std::string reference) {
+	auto head = getHeadHash(); // For the lockout warning
+
 	if (reference == "HEAD") {
-		reference = getHeadHash();
+		reference = head;
+		remove(".vcs/COMMIT_LOCK"); // Delete the lock file
+	}
+	else if (reference != head) {
+		// Create the lock file
+		std::ofstream lock(".vcs/COMMIT_LOCK", std::ios::binary);
+		lock << reference << "\n";
+
+		// And issue a warning
+		std::cerr << "Warning: You are detached from the HEAD commit.\n";
+		std::cerr << "Commits made in this state will be lost forever unless you remember their hash.\n\n";
+	}
+	else {
+		remove(".vcs/COMMIT_LOCK"); // Delete the lock file
 	}
 
 	std::ifstream commit(".vcs/commits/"+reference, std::ios::binary);
