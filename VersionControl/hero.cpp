@@ -287,6 +287,11 @@ void add(const std::vector<std::string>& files) {
 // This file will have its SHA256 as its filename, and will have formatting compatible with the format specified in commit-blob.txt
 void commit() {
 	bool detached(false);
+	std::string parent(getHeadHash());
+	if (parent == "") {
+		std::cerr << "Could not find repository head - have you run init?\n";
+		exit(1);
+	}
 
 	// Check for the commit lock
 	if (std::ifstream lock = std::ifstream(".vcs/COMMIT_LOCK", std::ios::binary)) {
@@ -297,13 +302,16 @@ void commit() {
 		std::getline(lock, hash);
 
 		std::cerr << "Warning: You are in detached head state.\n";
-		std::cerr << "The head commit is " << getHeadHash() << ".\n";
+		std::cerr << "The head commit is " << parent << ".\n";
 		std::cerr << "The currently checked out commit is recorded as " << hash << ".\n";
 		std::cerr << "Committing in this state will not update the HEAD marker, and consequently\n";
 		std::cerr << "  any commit you might make here will not appear in logs and will only be\n";
 		std::cerr << "  reachable if you know their hash.\n";
 		std::cerr << "To avoid this, copy your work to another location, press Ctrl-C to stop commit,\n";
 		std::cerr << "  and run `checkout HEAD`. You can then copy your work back and commit.\n";
+
+		// Update parent hash to be the one we have checked out
+		parent = hash;
 	}
 
 	std::string title; // Commit title
@@ -313,11 +321,6 @@ void commit() {
 	commit << "&&&\n";
 
 	// Write parent hash
-	std::string parent(getHeadHash());
-	if (parent=="") {
-		std::cerr << "Could not find repository head - have you run init?\n";
-		exit(1);
-	}
 	commit << "parent " << parent << "\n";
 
 	// Write datetime using date
