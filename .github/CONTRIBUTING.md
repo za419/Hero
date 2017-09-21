@@ -1,6 +1,6 @@
 # Contribution Guidelines
 
-First of all, I would like to welcome you to VersionControl. This is just a personal
+First of all, I would like to welcome you to Hero. This is just a personal
 pet project, and I am hard-pressed to imagine it becoming a real competitor to
 something like Git, but I am happy to have you help me see what we can make it into.
 
@@ -42,7 +42,7 @@ something like Git, but I am happy to have you help me see what we can make it i
 
 ## Developer Resources
 
-Because VersionControl is currently a very small project, there isn't a great deal
+Because Hero is currently a very small project, there isn't a great deal
 in the way of developer resources. If you wish to reach me, submitting an issue will
 normally be sufficient. However, if the need to contact me is urgent, I can be
 reached at my personal email (ryan951357@gmail.com). Please use this sparingly: If
@@ -52,7 +52,7 @@ forced to block addresses to prevent this.
 ### Issue tracking
 
 Issue tracking is done entirely on the [main GitHub
-repository](https://github.com/za419/VersionControl/issues). Of course, forks of the
+repository](https://github.com/za419/Hero/issues). Of course, forks of the
 project may maintain separate issue trackers, but I will generally not work to fix
 an issue unless it appears in the tracker in my repository.
 

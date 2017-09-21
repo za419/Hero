@@ -14,7 +14,7 @@ the [Contribution Guidelines](.github/CONTRIBUTING.md).
 
 ### Submodules
 
-To contribute to VersionControl, please note that git submodules are used in the
+To contribute to Hero, please note that git submodules are used in the
 project. This means that in order to properly clone it, you should pass
 `--recursive` to `git clone`, or alternatively you should run these two commands
 after cloning:
