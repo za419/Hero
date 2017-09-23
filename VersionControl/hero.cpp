@@ -1,7 +1,7 @@
 // hero.cpp : Defines the entry point for the console application.
 //
 
-#include "../date/date.h"
+#include "../date/include/date/date.h"
 #include "../PicoSHA2/picosha2.h"
 #include "crossplatform.h"
 #include "Utils.h"
