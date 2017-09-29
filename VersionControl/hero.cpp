@@ -335,6 +335,13 @@ void commit() {
 	// Get commit title from the user and write, escaped, to commit
 	std::cout << "Commit title: ";
 	std::getline(std::cin, title);
+
+	// Ken's Easter Egg
+	// This conditional is dedicated to Ken Ellorando.
+	if (title == "F") {
+		std::cout << "Respects paid.\n";
+	}
+
 	title = escaped(title, "/", "/sl;");
 	commit << "title " << escaped(title, "&", "/amp;") << "\n";
 
