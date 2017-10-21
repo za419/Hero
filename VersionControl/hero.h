@@ -5,13 +5,19 @@
 #define HERO_H
 #pragma once
 
+#include "Utils.h"
 #include <string>
 #include <fstream>
 
 const std::string REPOSITORY_PATH(".vcs");
 
+// Wrapper function around appended
+const char* repositoryPath(const std::string& filename) {
+	return appended(REPOSITORY_PATH, "/"+filename);
+}
+
 std::string getHeadHash() {
-	std::ifstream HEAD(REPOSITORY_PATH+"/HEAD");
+	std::ifstream HEAD(repositoryPath("HEAD"));
 	if (!HEAD)
 		return "";
 	std::string out;
