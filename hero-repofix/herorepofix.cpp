@@ -1,8 +1,7 @@
 // herorepofix.cpp : Defines the entry point for the console application.
 //
 
-#include "../VersionControl/crossplatform.h"
-
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -33,8 +32,7 @@ void upgradeFrom(const std::string& source) {
 	}
 	else if (source == "0.02.1") {
 		// The difference between 0.02.2 and 0.02.1 is simply the name of the repository directory
-		copyDirectory(".vcs", ".hero");
-		removeDirectory(".vcs");
+		rename(".vcs", ".hero");
 		// Now upgrade from the next version
 		upgradeFrom("0.02.2");
 	}
