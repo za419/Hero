@@ -4,6 +4,7 @@
 #define CROSSPLATFORM_H
 #pragma once
 
+#include "Utils.h"
 #include <cstdlib>
 #include <vector>
 
@@ -107,6 +108,10 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 #endif
 }
 
+int filesInDirectory(const CStr& dir, std::vector<std::string>& out) {
+	return filesInDirectory(dir.asStdString(), out);
+}
+
 // All functions below here are not technically shims, but they depend on the above and are not currently numerous enough to merit their own header.
 
 // emptyDirectory: Deletes all files in a given directory
@@ -126,6 +131,10 @@ int emptyDirectory(const std::string& dir) {
 	return 0;
 }
 
+int emptyDirectory(const CStr& dir) {
+	return emptyDirectory(dir.asStdString());
+}
+
 // Now removeDirectory (different from rmdir in that it doesn't fail on non-empty directories)
 // Returns 0, or the return value of the first function to return an error
 int removeDirectory(const std::string& dir) {
@@ -138,6 +147,9 @@ int removeDirectory(const std::string& dir) {
 	}
 
 	return 0;
+}
+int removeDirectory(const CStr& dir) {
+	return removeDirectory(dir.asStdString());
 }
 
 // Returns whether all operations succeeded
@@ -156,5 +168,8 @@ bool copyDirectory(const std::string& source, const std::string& dest) {
 	}
 
 	return true;
+}
+template<class A, class B> bool copyDirectory(const A& source, const B& dest) {
+	return copyDirectory(std::string(source), std::string(dest));
 }
 #endif // !CROSSPLATFORM_H

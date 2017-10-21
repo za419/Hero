@@ -12,7 +12,7 @@
 const std::string REPOSITORY_PATH(".hero");
 
 // Wrapper function around appended
-const char* repositoryPath(const std::string& filename) {
+CStr repositoryPath(const std::string& filename) {
 	return appended(REPOSITORY_PATH, "/"+filename);
 }
 
