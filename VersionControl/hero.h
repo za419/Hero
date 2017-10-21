@@ -11,7 +11,7 @@
 
 const std::string REPOSITORY_PATH(".hero");
 
-// Wrapper function around appended
+// Returns a convertible path to the file which could be accessed by filename from a program whose working directory is REPOSITORY_PATH
 CStr repositoryPath(const std::string& filename) {
 	return appended(REPOSITORY_PATH, "/"+filename);
 }
