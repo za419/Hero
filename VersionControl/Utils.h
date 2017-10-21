@@ -27,7 +27,7 @@ public:
 		m_data = nullptr;
 	}
 
-	CStr (const char* str) {
+	explicit CStr (const char* str) {
 		m_data = m_strdup(str);
 	}
 
@@ -85,6 +85,6 @@ protected:
 // Returns prefix+suffix as a c-string (equivalent)
 CStr appended(std::string prefix, const std::string& suffix) {
 	prefix += suffix;
-	return prefix.c_str();
+	return CStr(prefix.c_str());
 }
 #endif
