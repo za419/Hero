@@ -2,7 +2,7 @@
 
 # Tests the checkout function
 
-rm -fr .vcs
+rm -fr .hero
 
 ../x64/Debug/hero.exe init
 git checkout eb2cef163bffc4f3f38663843e5a35a0a4f5744a checkoutTest.txt
