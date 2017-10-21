@@ -133,6 +133,40 @@ int main(int argc, char* argv[]) {
 			usage(argv[0], Command::init);
 		}
 	}
+	else if (!strcmp(argv[1], "repofix")) {
+		// Skip all the mode stuff, just run hero-repofix
+		// I'm making this available, but at least for now not publicly documenting it
+		std::string arguments("hero-repofix");
+		// Go through the arguments we got after repofix, adding them to the string, so we can call repofix correctly
+		// At least for now, this is pretty much useless, since repofix can only be fixed with exactly one argument
+		// But I don't think I'll be touching this again, so...
+		// I intend to write this so that I'll never need to.
+		for (int i = 2; i < argc; ++i) {
+			arguments += " ";
+			arguments += argv[i];
+		}
+		// You'd think that arguments would now have our commandline.
+		// You'd be right, but only if hero-repofix is in the PATH.
+		// In order to handle that, we're going to assume that hero and hero-repofix are in the same directory
+		// So we can take the path given in argv[0] and prepend it to the produced commandline to make sure we're calling repofix.
+		std::string invocation(argv[0]);
+		size_t index(invocation.find_last_of('/'));
+		if (index == std::string::npos) {
+			index = invocation.find_last_of('\\');
+			if (index == std::string::npos) {
+				std::cerr << "Could not invoke hero-repofix.\n";
+				exit(127);
+			}
+		}
+		invocation = invocation.substr(0, index+1);
+		if (system(appended(invocation, arguments))) {
+			std::cerr << "Could not invoke hero-repofix.\n";
+			exit(128);
+		}
+		else {
+			exit(0);
+		}
+	}
 	else {
 		usage(argv[0], Command::unknownCommand);
 	}
