@@ -9,7 +9,7 @@
 #include <string>
 #include <fstream>
 
-const std::string REPOSITORY_PATH(".vcs");
+const std::string REPOSITORY_PATH(".hero");
 
 // Wrapper function around appended
 const char* repositoryPath(const std::string& filename) {
