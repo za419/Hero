@@ -245,4 +245,4 @@ ModelManifest.xml
 .fake/
 
 # Non auto-generated entries
-*/.vcs/
+*/.hero/
