@@ -16,4 +16,10 @@ std::string escaped(std::string source, const std::string& term, const std::stri
 	}
 	return source;
 }
+
+// Returns prefix+suffix as a c-string
+const char* appended(std::string prefix, const std::string& suffix) {
+	prefix += suffix;
+	return prefix.c_str();
+}
 #endif
