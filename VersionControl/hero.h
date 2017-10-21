@@ -8,6 +8,8 @@
 #include <string>
 #include <fstream>
 
+const std::string REPOSITORY_PATH(".vcs/");
+
 std::string getHeadHash() {
 	std::ifstream HEAD(".vcs/HEAD");
 	if (!HEAD)
