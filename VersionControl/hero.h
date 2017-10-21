@@ -8,10 +8,10 @@
 #include <string>
 #include <fstream>
 
-const std::string REPOSITORY_PATH(".vcs/");
+const std::string REPOSITORY_PATH(".vcs");
 
 std::string getHeadHash() {
-	std::ifstream HEAD(".vcs/HEAD");
+	std::ifstream HEAD(REPOSITORY_PATH+"/HEAD");
 	if (!HEAD)
 		return "";
 	std::string out;
