@@ -6,6 +6,7 @@
 #include "crossplatform.h"
 #include "Utils.h"
 #include "hero.h"
+#include "classes/indexmap.h"
 
 #include <iostream>
 #include <cstdint>
