@@ -42,7 +42,28 @@ public:
 	}
 
 	const Hash& operator[] (const Filename& file) const {
-		return m_map[file];
+		return m_map.at(file);
+	}
+
+	friend std::ostream& operator << (std::ostream& stream, const Indexmap& map) {
+		for (const auto& it : map.m_map) {
+			stream << it.first << ',' << it.second << '\n';
+		}
+		return stream;
+	}
+
+	friend std::istream& operator >> (std::istream& stream, Indexmap& map) {
+		std::string buffer;
+		std::getline(stream, buffer);
+		while (stream) {
+			std::string first, second;
+			auto sep(buffer.find_first_of(','));
+			first = buffer.substr(0, sep);
+			second = buffer.substr(sep + 1);
+			map.m_map[first] = second;
+			std::getline(stream, buffer);
+		}
+		return stream;
 	}
 protected:
 	std::map<Filename, Hash> m_map;
