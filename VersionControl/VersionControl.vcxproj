@@ -184,6 +184,7 @@
     <ClCompile Include="hero.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="classes\indexmap.h" />
     <ClInclude Include="crossplatform.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="hero.h" />
