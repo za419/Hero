@@ -10,6 +10,7 @@
 #include <fstream>
 
 const std::string REPOSITORY_PATH(".hero");
+const std::string INDEXMAP_PATH("index/map");
 
 // Returns a convertible path to the file which could be accessed by filename from a program whose working directory is REPOSITORY_PATH
 CStr repositoryPath(const std::string& filename) {
