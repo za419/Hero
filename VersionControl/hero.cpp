@@ -276,7 +276,7 @@ void init() {
 	std::string hash = picosha2::hash256_hex_string(contents);
 
 	// And write to the commit file
-	std::ofstream file(repositoryPath("/commits/" + hash));
+	std::ofstream file(repositoryPath("commits/" + hash));
 	if (!file) {
 		removeDirectory(REPOSITORY_PATH);
 		std::cerr << "Could not initialize repository.\n";
