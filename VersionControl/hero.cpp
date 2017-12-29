@@ -301,9 +301,16 @@ void init() {
 // Next up, add.
 // Take the files in the provided vector, and copy them to the index
 void add(const std::vector<std::string>& files) {
+	Indexmap imap;
+	std::ifstream imap_stream(INDEXMAP_PATH);
+	imap_stream >> imap;
+
 	std::string tmp;
+	std::string hash;
 	for (auto file : files) {
-		tmp = repositoryPath("index/" + file);
+		hash = picosha2::hash256_hex_string(std::ifstream(file));
+		imap[file] = hash;
+		tmp = repositoryPath("index/" + hash);
 		if (!copyfile(file.c_str(), tmp.c_str())) {
 			std::cout << "Error: Could not copy file " << file << ".\n";
 
