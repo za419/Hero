@@ -242,6 +242,8 @@ void init() {
 	mkdir(repositoryPath("index"));
 	mkdir(repositoryPath("commits"));
 
+	std::ofstream indexmap(INDEXMAP_PATH);
+
 	// Make a plain initial commit marking repository creation
 	// First, the easy part.
 	std::stringstream commit; // Stores the growing commit in memory. Technically, we shouldn't do this, but... you know.
