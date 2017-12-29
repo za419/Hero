@@ -16,6 +16,9 @@ public:
 	using Filename = std::string;
 	using Hash = std::string;
 
+	using iterator = std::map<Filename, Hash>::iterator;
+	using const_iterator = std::map<Filename, Hash>::const_iterator;
+
 	Indexmap() {}
 	Indexmap(const Indexmap& map):m_map(map.m_map) {}
 	Indexmap(Indexmap&& map):m_map(std::move(map.m_map)) {}
@@ -35,6 +38,30 @@ public:
 			}
 		}
 		return "";
+	}
+
+	iterator begin() {
+		return m_map.begin();
+	}
+
+	const_iterator begin() const {
+		return m_map.cbegin();
+	}
+
+	const_iterator cbegin() const {
+		return m_map.cbegin();
+	}
+
+	iterator end() {
+		return m_map.end();
+	}
+
+	const_iterator end() const {
+		return m_map.cend();
+	}
+
+	const_iterator cend() const {
+		return m_map.cend();
 	}
 
 	bool exists(const Filename& file) const {
