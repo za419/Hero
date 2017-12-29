@@ -409,9 +409,14 @@ void commit() {
 		std::cerr << "Could not list index.\n";
 		exit(err);
 	}
+	Commitmap cmap;
+	std::ifstream cmap_file(INDEXMAP_PATH);
+	cmap_file >> cmap;
+
+
 	commit << "files [";
 	for (const auto& file : files) {
-		commit << file << ",";
+		commit << cmap[file] << ",";
 	}
 	commit << "]\n";
 
