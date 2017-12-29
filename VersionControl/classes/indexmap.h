@@ -37,6 +37,10 @@ public:
 		return "";
 	}
 
+	bool exists(const Filename& file) const {
+		return m_map.count(file) > 0;
+	}
+
 	Hash& operator[] (const Filename& file) {
 		return m_map[file];
 	}
