@@ -322,6 +322,9 @@ void add(const std::vector<std::string>& files) {
 		}
 	}
 
+	std::ofstream output(INDEXMAP_PATH, std::ios::out | std::ios::trunc);
+	output << imap;
+
 	std::cout << "All files added to index.\n";
 }
 
