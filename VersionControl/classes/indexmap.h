@@ -287,6 +287,8 @@ public:
 	}
 
 	void write() {
+		if (m_location.size())) return; // Do not attempt sync to empty strings
+
 		std::ofstream target(m_location, std::ios::out | std::ios::trunc);
 		target << map;
 		target.close();
