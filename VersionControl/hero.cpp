@@ -402,14 +402,10 @@ void commit() {
 	// Now, get the list of files in the index, and add their names to the commit header.
 	CommitmapLoader cmap_ldr;
 	Commitmap& cmap(cmap_ldr.map);
-	std::vector<std::string> files;
-	for (const auto& pair : cmap) {
-		files.push_back(pair.first);
-	}
 
 	commit << "files [";
-	for (const auto& file : files) {
-		commit << cmap[file] << ",";
+	for (const auto& pair : cmap) {
+		commit << pair.second << ",";
 	}
 	commit << "]\n";
 
@@ -418,21 +414,24 @@ void commit() {
 
 	// Now, loop over the files
 	size_t totalSize(0); // Tracks the size of all files, for the footer.
-	for (const auto& file : files) {
+	for (const auto& pair : cmap) {
+		const Commitmap::Hash& index(pair.first);
+		const Commitmap::Filename& disk(pair.second);
+
 		// First, write the file path, from the commitmap.
-		commit << cmap[file] << "\n";
+		commit << disk << "\n";
 
 		// Now, open the file
-		std::ifstream ifs(repositoryPath("index/" + file), std::ios::binary);
+		std::ifstream ifs(repositoryPath("index/" + index), std::ios::binary);
 
 		// Now, write the hash of the file.
 		// We distrust the indexmap, just in case it's been modified (for some reason):
 		//   We want the commit's file hash to always match the hash of the data in the file.
 		// It's a data integrity thing. That is, after all, the point of writing the hash.
 		auto hash = picosha2::hash256_hex_string(ifs);
-		if (hash != file) {
-			std::cout << "Indexed file " << cmap[file] << " has a hash mismatch.\n"
-				<< "  Hash at add time was: " << file << "\n"
+		if (hash != index) {
+			std::cout << "Indexed file " << disk << " has a hash mismatch.\n"
+				<< "  Hash at add time was: " << index << "\n"
 				<< "  Hash at commit time is: " << hash << "\n"
 				<< "Some data may have been corrupted.\n\n";
 		}
@@ -458,7 +457,7 @@ void commit() {
 		commit << "&&&&&\n";
 
 		// Remove the file from the index
-		remove(repositoryPath("index/" + file));
+		remove(repositoryPath("index/" + index));
 	}
 
 	// Finally, the commit footer
