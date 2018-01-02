@@ -246,6 +246,10 @@ public:
 	}
 
 	~basic_indexmapLoader() {
+		write();
+	}
+
+	void write() {
 		std::ofstream target(m_location, std::ios::out | std::ios::trunc);
 		target << map;
 		target.close();
