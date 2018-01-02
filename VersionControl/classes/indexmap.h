@@ -48,27 +48,27 @@ public:
 		return "";
 	}
 
-	iterator begin() {
+	iterator begin() noexcept {
 		return m_map.begin();
 	}
 
-	const_iterator begin() const {
+	const_iterator begin() const noexcept {
 		return m_map.cbegin();
 	}
 
-	const_iterator cbegin() const {
+	const_iterator cbegin() const noexcept {
 		return m_map.cbegin();
 	}
 
-	iterator end() {
+	iterator end() noexcept {
 		return m_map.end();
 	}
 
-	const_iterator end() const {
+	const_iterator end() const noexcept {
 		return m_map.cend();
 	}
 
-	const_iterator cend() const {
+	const_iterator cend() const noexcept {
 		return m_map.cend();
 	}
 
@@ -96,7 +96,7 @@ public:
 		m_map.erase(first, last);
 	}
 
-	void clear() {
+	void clear() noexcept {
 		m_map.clear();
 	}
 
@@ -172,27 +172,27 @@ public:
 		return m_map.at(file);
 	}
 
-	iterator begin() {
+	iterator begin() noexcept {
 		return m_map.begin();
 	}
 
-	const_iterator begin() const {
+	const_iterator begin() const noexcept {
 		return m_map.cbegin();
 	}
 
-	const_iterator cbegin() const {
+	const_iterator cbegin() const noexcept {
 		return m_map.cbegin();
 	}
 
-	iterator end() {
+	iterator end() noexcept {
 		return m_map.end();
 	}
 
-	const_iterator end() const {
+	const_iterator end() const noexcept {
 		return m_map.cend();
 	}
 
-	const_iterator cend() const {
+	const_iterator cend() const noexcept {
 		return m_map.cend();
 	}
 
@@ -220,7 +220,7 @@ public:
 		m_map.erase(first, last);
 	}
 
-	void clear() {
+	void clear() noexcept {
 		m_map.clear();
 	}
 

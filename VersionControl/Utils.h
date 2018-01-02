@@ -23,7 +23,7 @@ std::string escaped(std::string source, const std::string& term, const std::stri
 // In effect, this is to abstract away the memory management part of working with a cstring, in such a way that its invisible most of the time.
 class CStr {
 public: 
-	CStr() {
+	CStr() noexcept {
 		m_data = nullptr;
 	}
 
@@ -40,7 +40,7 @@ public:
 		str.m_data = nullptr;
 	}
 
-	virtual ~CStr() {
+	virtual ~CStr() noexcept {
 		delete[] m_data;
 	}
 
@@ -60,15 +60,15 @@ public:
 		return *this;
 	}
 
-	std::string asStdString() const {
+	std::string asStdString() const noexcept {
 		return m_data;
 	}
 
-	operator char* () {
+	operator char* () noexcept {
 		return m_data;
 	}
 
-	operator const char* () const {
+	operator const char* () const noexcept {
 		return m_data;
 	}
 protected:
