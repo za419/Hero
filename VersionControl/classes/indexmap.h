@@ -138,7 +138,7 @@ public:
 		}
 	}
 
-	void add(const Hash& file) {
+	void add(const Filename& file) {
 		m_map[picosha2::hash256_hex_string(std::ifstream(file))] = file;
 	}
 
