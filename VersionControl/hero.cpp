@@ -408,7 +408,6 @@ void commit() {
 	CommitmapLoader cmap_ldr;
 	Commitmap& cmap(cmap_ldr.map);
 
-
 	commit << "files [";
 	for (const auto& file : files) {
 		commit << cmap[file] << ",";
