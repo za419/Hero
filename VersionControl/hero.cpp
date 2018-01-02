@@ -429,7 +429,14 @@ void commit() {
 		// We distrust the indexmap, just in case it's been modified (for some reason):
 		//   We want the commit's file hash to always match the hash of the data in the file.
 		// It's a data integrity thing. That is, after all, the point of writing the hash.
-		commit << "checksum " << picosha2::hash256_hex_string(ifs) << "\n";
+		auto hash = picosha2::hash256_hex_string(ifs);
+		if (hash != file) {
+			std::cout << "Indexed file " << cmap[file] << " has a hash mismatch.\n"
+				<< "  Hash at add time was: " << file << "\n"
+				<< "  Hash at commit time is: " << hash << "\n"
+				<< "Some data may have been corrupted.\n\n";
+		}
+		commit << "checksum " << hash << "\n";
 
 		// Now, get and write the size of the file
 		ifs.seekg(0, ifs.end);
