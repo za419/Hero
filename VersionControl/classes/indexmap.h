@@ -83,6 +83,20 @@ public:
 		return m_map.at(file);
 	}
 
+	static Indexmap loadFrom(std::istream& stream) {
+		Indexmap result;
+		stream >> result;
+		return result;
+	}
+
+	static Indexmap loadFrom(const std::string& file) {
+		return loadFrom(std::ifstream(file));
+	}
+
+	static Indexmap loadFrom(const char* file) {
+		return loadFrom(std::ifstream(file));
+	}
+
 	friend std::ostream& operator << (std::ostream& stream, const Indexmap& map) {
 		for (const auto& it : map.m_map) {
 			stream << it.first << ',' << it.second << '\n';
@@ -175,6 +189,20 @@ public:
 
 	const Filename& operator[] (const Hash& file) const {
 		return m_map.at(file);
+	}
+
+	static Commitmap loadFrom(std::istream& stream) {
+		Commitmap result;
+		stream >> result;
+		return result;
+	}
+
+	static Commitmap loadFrom(const std::string& file) {
+		return loadFrom(std::ifstream(file));
+	}
+
+	static Commitmap loadFrom(const char* file) {
+		return loadFrom(std::ifstream(file));
 	}
 
 	friend std::ostream& operator << (std::ostream& stream, const Commitmap& map) {

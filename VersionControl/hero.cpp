@@ -303,9 +303,7 @@ void init() {
 // Next up, add.
 // Take the files in the provided vector, and copy them to the index
 void add(const std::vector<std::string>& files) {
-	Indexmap imap;
-	std::ifstream imap_stream(INDEXMAP_PATH);
-	imap_stream >> imap;
+	Indexmap imap(Indexmap::loadFrom(repositoryPath(INDEXMAP_PATH)));
 
 	std::string tmp;
 	std::string hash;
@@ -409,9 +407,7 @@ void commit() {
 		std::cerr << "Could not list index.\n";
 		exit(err);
 	}
-	Commitmap cmap;
-	std::ifstream cmap_file(INDEXMAP_PATH);
-	cmap_file >> cmap;
+	Commitmap cmap(Commitmap::loadFrom(repositoryPath(INDEXMAP_PATH)));
 
 
 	commit << "files [";
