@@ -400,13 +400,12 @@ void commit() {
 	std::cout << "Creating new commit \'" << title << "\'..." << std::endl;
 
 	// Now, get the list of files in the index, and add their names to the commit header.
-	std::vector<std::string> files;
-	if (int err = filesInDirectory(repositoryPath("index"), files)) {
-		std::cerr << "Could not list index.\n";
-		exit(err);
-	}
 	CommitmapLoader cmap_ldr;
 	Commitmap& cmap(cmap_ldr.map);
+	std::vector<std::string> files;
+	for (const auto& pair : cmap) {
+		files.push_back(pair.first);
+	}
 
 	commit << "files [";
 	for (const auto& file : files) {
@@ -420,14 +419,17 @@ void commit() {
 	// Now, loop over the files
 	size_t totalSize(0); // Tracks the size of all files, for the footer.
 	for (const auto& file : files) {
-		// First, write the file path. For now, we don't properly handle subdirectories, so that's just a filename.
-		commit << file << "\n";
+		// First, write the file path, from the commitmap.
+		commit << cmap[file] << "\n";
 
 		// Now, open the file
 		std::ifstream ifs(repositoryPath("index/" + file), std::ios::binary);
 
-		// Now, calculate and write the SHA256 of that file
-		commit << "checksum " << picosha2::hash256_hex_string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>()) << "\n";
+		// Now, write the hash of the file.
+		// We distrust the indexmap, just in case it's been modified (for some reason):
+		//   We want the commit's file hash to always match the hash of the data in the file.
+		// It's a data integrity thing. That is, after all, the point of writing the hash.
+		commit << "checksum " << picosha2::hash256_hex_string(ifs) << "\n";
 
 		// Now, get and write the size of the file
 		ifs.seekg(0, ifs.end);
@@ -472,6 +474,9 @@ void commit() {
 	}
 	file.write(contents.c_str(), contents.size());
 	file.close();
+
+	// Now, clear the indexmap (the file on disk will be truncated at end-of-scope)
+	cmap.clear();
 
 	// If we're in a detached state, warn about not updating HEAD and print our hash
 	if (detached) {
