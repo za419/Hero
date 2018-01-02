@@ -97,7 +97,7 @@ public:
 	}
 
 	void clear() {
-		erase(begin(), end());
+		m_map.clear();
 	}
 
 	static Indexmap loadFrom(std::istream& stream) {
@@ -221,7 +221,7 @@ public:
 	}
 
 	void clear() {
-		erase(begin(), end());
+		m_map.clear();
 	}
 
 	static Commitmap loadFrom(std::istream& stream) {
