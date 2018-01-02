@@ -272,6 +272,7 @@ public:
 	T map;
 
 	basic_indexmapLoader(): m_location(repositoryPath(INDEXMAP_PATH)), map(T::loadFrom(m_location)) {}
+	basic_indexmapLoader(const char* c) : m_location(c), map(T::loadFrom(m_location)) {}
 	basic_indexmapLoader(const std::string& s) : m_location(s), map(T::loadFrom(m_location)) {}
 	basic_indexmapLoader(basic_indexmapLoader&& il) : m_location(std::move(il.m_location)), map(std::move(il.map)) {
 		il.m_location = "";
