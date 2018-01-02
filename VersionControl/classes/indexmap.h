@@ -84,6 +84,10 @@ public:
 		return m_map.at(file);
 	}
 
+	void clear() {
+		m_map.erase(begin(), end());
+	}
+
 	static Indexmap loadFrom(std::istream& stream) {
 		Indexmap result;
 		stream >> result;
@@ -190,6 +194,10 @@ public:
 
 	const Filename& operator[] (const Hash& file) const {
 		return m_map.at(file);
+	}
+
+	void clear() {
+		m_map.erase(begin(), end());
 	}
 
 	static Commitmap loadFrom(std::istream& stream) {
