@@ -5,6 +5,7 @@
 #pragma once
 
 #include "../../PicoSHA2/picosha2.h"
+#include "hero.h"
 
 #include <string>
 #include <utility>
@@ -228,4 +229,34 @@ public:
 protected:
 	std::map<Hash, Filename> m_map;
 };
+
+// A class which handles automatically loading and writing the indexmap in the chosen format
+// The contained Indexmap is automatically loaded from disk when its constructed, and written to disk when the loader goes out of scope.
+// T should be one of the above classes
+// By default, the indexmap is loaded from the default indexmap path, but it can be loaded from alternate paths
+// Cannot be copied. Move will enforce that the moved loader cannot write to disk
+template <class T> class basic_indexmapLoader {
+public:
+	T map;
+
+	basic_indexmapLoader(): m_location(repositoryPath(INDEXMAP_PATH)), map(T::loadFrom(m_location)) {}
+	basic_indexmapLoader(const std::string& s) : m_location(s), map(T::loadFrom(m_location)) {}
+	basic_indexmapLoader(basic_indexmapLoader&& il) : m_location(std::move(il.m_location)), map(std::move(il.map)) {
+		il.m_location = "";
+	}
+
+	~basic_indexmapLoader() {
+		std::ofstream target(m_location, std::ios::out | std::ios::trunc);
+		target << map;
+		target.close();
+	}
+protected:
+	std::string m_location;
+
+private:
+	basic_indexmapLoader(const basic_indexmapLoader&);
+};
+
+using IndexmapLoader = basic_indexmapLoader<Indexmap>;
+using CommitmapLoader = basic_indexmapLoader<Commitmap>;
 #endif // !INDEXMAP_H
