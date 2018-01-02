@@ -249,6 +249,10 @@ public:
 		write();
 	}
 
+	void read() {
+		map = T::loadFrom(m_location);
+	}
+
 	void write() {
 		std::ofstream target(m_location, std::ios::out | std::ios::trunc);
 		target << map;
