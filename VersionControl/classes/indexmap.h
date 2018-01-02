@@ -84,8 +84,20 @@ public:
 		return m_map.at(file);
 	}
 
+	iterator erase(const_iterator position) {
+		m_map.erase(position);
+	}
+
+	size_t erase(const Filename& value) {
+		m_map.erase(value);
+	}
+
+	iterator erase(const_iterator first, const_iterator last) {
+		m_map.erase(first, last);
+	}
+
 	void clear() {
-		m_map.erase(begin(), end());
+		erase(begin(), end());
 	}
 
 	static Indexmap loadFrom(std::istream& stream) {
@@ -196,8 +208,20 @@ public:
 		return m_map.at(file);
 	}
 
+	iterator erase(const_iterator position) {
+		m_map.erase(position);
+	}
+
+	size_t erase(const Hash& value) {
+		m_map.erase(value);
+	}
+
+	iterator erase(const_iterator first, const_iterator last) {
+		m_map.erase(first, last);
+	}
+
 	void clear() {
-		m_map.erase(begin(), end());
+		erase(begin(), end());
 	}
 
 	static Commitmap loadFrom(std::istream& stream) {
