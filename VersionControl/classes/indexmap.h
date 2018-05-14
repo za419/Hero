@@ -76,6 +76,10 @@ public:
 		return m_map.count(file) > 0;
 	}
 
+	size_t size() const {
+		return m_map.size();
+	}
+
 	Hash& operator[] (const Filename& file) {
 		return m_map[file];
 	}
@@ -200,6 +204,10 @@ public:
 
 	bool exists(const Hash& file) const {
 		return m_map.count(file) > 0;
+	}
+
+	size_t size() const {
+		return m_map.size();
 	}
 
 	Filename& operator[] (const Hash& file) {
