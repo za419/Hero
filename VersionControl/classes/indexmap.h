@@ -226,6 +226,8 @@ public:
 
 	static Commitmap loadFrom(std::istream& stream) {
 		Commitmap result;
+		if (!stream) // Allow bad streams by returning an empty Commitmap
+			return result;
 		stream >> result;
 		return result;
 	}
