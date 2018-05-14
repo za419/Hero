@@ -28,9 +28,14 @@ std::string getHeadHash() {
 	return out;
 }
 
+// Returns the SHA256 hash of the stream
+std::string hashOfFile(std::istream& ifs) {
+	return picosha2::hash256_hex_string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+}
+
 // Returns the SHA256 hash of the file at filename
 std::string hashOfFile(const std::string& filename) {
 	std::ifstream ifs(filename, std::ios::binary);
-	return picosha2::hash256_hex_string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+	return hashOfFile(ifs);
 }
 #endif
