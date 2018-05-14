@@ -102,6 +102,8 @@ public:
 
 	static Indexmap loadFrom(std::istream& stream) {
 		Indexmap result;
+		if (!stream) // Allow bad streams by returning an empty Commitmap
+			return result;
 		stream >> result;
 		return result;
 	}
