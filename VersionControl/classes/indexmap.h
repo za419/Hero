@@ -25,11 +25,7 @@ public:
 	Indexmap() {}
 	Indexmap(const Indexmap& map):m_map(map.m_map) {}
 	Indexmap(Indexmap&& map):m_map(std::move(map.m_map)) {}
-	Indexmap(const Commitmap& map) {
-		for (const auto& it : map) {
-			m_map[it.second] = it.first;
-		}
-	}
+	Indexmap(const Commitmap& map);
 	
 	void add(const Filename& file) {
 		m_map[file] = picosha2::hash256_hex_string(std::ifstream(file));
@@ -273,6 +269,12 @@ public:
 protected:
 	std::map<Hash, Filename> m_map;
 };
+
+Indexmap::Indexmap(const Commitmap& map) {
+	for (const auto& it : map) {
+		m_map[it.second] = it.first;
+	}
+}
 
 // A class which handles automatically loading and writing the indexmap in the chosen format
 // The contained Indexmap is automatically loaded from disk when its constructed, and written to disk when the loader goes out of scope.
