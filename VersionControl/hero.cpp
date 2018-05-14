@@ -591,6 +591,14 @@ void commitFiles(const std::vector<std::string>& files) {
 			exit(2);
 		}
 	}
+
+	// Restore the Indexmap if we backed it up separately
+	if (INDEXMAP_PATH.find("index/")) {
+		if (!copyfile(repositoryPath("indexCopy/" + INDEXMAP_PATH), repositoryPath(INDEXMAP_PATH))) {
+			std::cerr << "Could not restore index.\n";
+			exit(3);
+		}
+	}
 	removeDirectory(repositoryPath("indexCopy"));
 }
 
