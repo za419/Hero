@@ -555,6 +555,14 @@ void commitFiles(const std::vector<std::string>& files) {
 		exit(1);
 	}
 
+	// If INDEXMAP_PATH doesn't start with index/, our prior copy didn't get it, so we have to do it ourselves.
+	if (INDEXMAP_PATH.find("index/")) {
+		if (!copyfile(repositoryPath(INDEXMAP_PATH), repositoryPath("indexCopy/" + INDEXMAP_PATH))) {
+			std::cerr << "Could not back up repository index.\n";
+			exit(1);
+		}
+	}
+
 	// Empty the index entirely
 	emptyDirectory(repositoryPath("index"));
 
