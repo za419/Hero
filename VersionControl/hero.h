@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Utils.h"
+#include "../PicoSHA2/picosha2.h"
 #include <string>
 #include <fstream>
 
@@ -25,5 +26,11 @@ std::string getHeadHash() {
 	std::getline(HEAD, out);
 	HEAD.close();
 	return out;
+}
+
+// Returns the SHA256 hash of the file at filename
+std::string hashOfFile(const std::string& filename) {
+	std::ifstream ifs(filename, std::ios::binary);
+	return picosha2::hash256_hex_string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
 }
 #endif
