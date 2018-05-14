@@ -463,7 +463,7 @@ void commit() {
 	// Finally, the commit footer
 	commit << "COMMIT FOOTER\n";
 	commit << "&&&\n";
-	commit << "count " << files.size() << "\n";
+	commit << "count " << cmap.size() << "\n";
 	commit << "size " << totalSize << "\n";
 	commit << "&&&&&\n";
 
