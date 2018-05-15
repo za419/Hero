@@ -16,6 +16,13 @@
 #include <sys/stat.h>
 #endif
 
+// Now, chdir
+#if defined(_WIN32)
+#define chdir(dirname) _chdir(dirname)
+#else
+#include <unistd.h>
+#endif
+
 // Now, rmdir
 #if defined(_WIN32)
 #include <direct.h>
