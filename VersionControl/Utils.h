@@ -5,6 +5,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 std::string escaped(std::string source, const std::string& term, const std::string& replacement) {
 	size_t i(0);
@@ -17,13 +18,44 @@ std::string escaped(std::string source, const std::string& term, const std::stri
 	return source;
 }
 
+// Splits a string into a vector by a delimiter
+std::vector<std::string> split(std::string source, char delim = ' ') {
+	size_t i;
+	std::vector<std::string> out;
+	while ((i = source.find(delim)) != std::string::npos) {
+		if (i)
+			out.push_back(source.substr(0, i));
+		else
+			out.push_back("");
+
+		source.erase(0, i + 1);
+	}
+	out.push_back(source);
+	return out;
+}
+
+std::vector<std::string> split(std::string source, std::string delim = " ") {
+	size_t i;
+	std::vector<std::string> out;
+	while ((i = source.find(delim)) != std::string::npos) {
+		if (i)
+			out.push_back(source.substr(0, i));
+		else
+			out.push_back("");
+
+		source.erase(0, i + 1);
+	}
+	out.push_back(source);
+	return out;
+}
+
 // Simple class, holds a dynamically allocated string whose lifecycle the class manages.
 // Note that this is far less featured than a class like std::string. This class is not intended for any sort of use as its own object.
 // Instead, it is intended to hold a cstring allocated on the heap in such a way that the object itself can be passed to functions which accept a cstring (without freeing it)
 // In effect, this is to abstract away the memory management part of working with a cstring, in such a way that its invisible most of the time.
 class CStr {
 public: 
-	CStr() {
+	CStr() noexcept {
 		m_data = nullptr;
 	}
 
@@ -40,7 +72,7 @@ public:
 		str.m_data = nullptr;
 	}
 
-	virtual ~CStr() {
+	virtual ~CStr() noexcept {
 		delete[] m_data;
 	}
 
@@ -60,15 +92,15 @@ public:
 		return *this;
 	}
 
-	std::string asStdString() const {
+	std::string asStdString() const noexcept {
 		return m_data;
 	}
 
-	operator char* () {
+	operator char* () noexcept {
 		return m_data;
 	}
 
-	operator const char* () const {
+	operator const char* () const noexcept {
 		return m_data;
 	}
 protected:

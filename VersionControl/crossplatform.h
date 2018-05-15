@@ -16,6 +16,13 @@
 #include <sys/stat.h>
 #endif
 
+// Now, chdir
+#if defined(_WIN32)
+#define chdir(dirname) _chdir(dirname)
+#else
+#include <unistd.h>
+#endif
+
 // Now, rmdir
 #if defined(_WIN32)
 #include <direct.h>
@@ -110,6 +117,56 @@ int filesInDirectory(std::string dir, std::vector<std::string>& out) {
 
 int filesInDirectory(const CStr& dir, std::vector<std::string>& out) {
 	return filesInDirectory(dir.asStdString(), out);
+}
+
+// The same function as above, but including directories in ourput
+int contentsOfDirectory(std::string dir, std::vector<std::string>& out) {
+	out.clear();
+#if defined(_WIN32) // Adapted from MSDN example: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365200(v=vs.85).aspx
+	HANDLE hFind;
+	WIN32_FIND_DATA ffd;
+
+	dir += "\\*";
+	if ((hFind = FindFirstFile(dir.c_str(), &ffd)) != INVALID_HANDLE_VALUE) {
+		do {
+			// Skip directories . and ..
+			if (ffd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY && (std::string(ffd.cFileName)=="." || std::string(ffd.cFileName)==".."))
+				continue;
+			out.push_back(ffd.cFileName);
+		} while (FindNextFile(hFind, &ffd));
+		DWORD err(GetLastError());
+		FindClose(hFind);
+		if (err == ERROR_NO_MORE_FILES || err == ERROR_SUCCESS)
+			return 0;
+		else
+			return (int)err;
+	}
+	else
+		return (int)ERROR_INVALID_HANDLE;
+#else
+	DIR* direc;
+	struct dirent* ent;
+	struct stat file_stat;
+	dir += "/";
+	if ((direc = opendir(dir.c_str())) != NULL) {
+		while (ent = readdir(direc) != NULL) {
+			if (stat((dir + end->d_name).c_str(), &file_stat))
+				out.push_back(ent->d_name); // In case of error, assume regular file
+			if (S_ISREG(file_stat.st_mode)) // Otherwise, only push regular files...
+				out.push_back(ent->d_name);
+			if (S_ISDIR(file_stat.st_mode) && std::string(ent->d_name) != "." && std::string(ent->d_name) != "..") // ... Or directories that aren't . or ..
+				out.push_back(ent->d_name);
+		}
+		closedir(dir);
+		return 0;
+	}
+	else
+		return errno;
+#endif
+}
+
+int contentsOfDirectory(const CStr& dir, std::vector<std::string>& out) {
+	return contentsOfDirectory(dir.asStdString(), out);
 }
 
 // All functions below here are not technically shims, but they depend on the above and are not currently numerous enough to merit their own header.
