@@ -89,7 +89,19 @@ int main(int argc, char* argv[]) {
 		}
 		else {
 			// Post 0.02.2
-			upgradeFrom("0.02.2");
+			std::vector<std::string> indexfiles;
+			if (filesInDirectory(".hero/index/", indexfiles)) {
+				std::cerr << "Could not perform heuristic recognition.\n";
+				return 1;
+			}
+
+			// If there are some files in the index, we should try to check for an indexmap
+			if (indexfiles.size() && !std::ifstream(".hero/index/map")) // If no indexmap, but index files, then we are in 0.02.2
+				upgradeFrom("0.02.2");
+			else {
+				// If there are no index files we don't care about 0.03.0. If there are, and there is an indexmap, we are post-0.03.0
+				upgradeFrom("0.03.0");
+			}
 		}
 	}
 	else {
