@@ -719,7 +719,7 @@ void checkout(std::string reference) {
 				char result = '\0';
 				while (result != 'y' && result != 'n' && result != '\n') {
 					std::cout << "File on disk has same SHA256 as file in commit. Checkout anyway? (y/N) ";
-					char result = tolower(std::cin.get());
+					result = tolower(std::cin.get());
 					std::cout << std::endl;
 				}
 				skip = (result != 'n');
