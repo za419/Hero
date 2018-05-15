@@ -309,15 +309,41 @@ void add(const std::vector<std::string>& files) {
 	std::string tmp;
 	std::string hash;
 	for (auto file : files) {
-		hash = picosha2::hash256_hex_string(std::ifstream(file));
+		std::ifstream read(file);
+		if (!read) {
+			// If a provided file is not a file, then try to treat it as a directory
+			std::vector<std::string> f;
+			if (filesInDirectory(file, f)) {
+				std::cerr << "Error: Could not index file " << file << ".\n";
+
+				emptyDirectory(repositoryPath("index"));
+				std::cerr << "Index emptied.\n";
+				std::cerr << "Please re-add the appropriate files to the index.\n";
+
+				exit(2);
+			}
+			
+			// Add all files in the directory.
+			// First, make sure that the paths get prepended to the filenames
+			// Then recurse with the newly filled vector.
+			if (file.back() != '/' && file.back() != '\\')
+				file += '/';
+			for (auto& fi : f) {
+				fi = file + fi;
+			}
+			add(f);
+		}
+
+		hash = picosha2::hash256_hex_string(read);
+		read.close();
 		imap[file] = hash;
 		tmp = repositoryPath("index/" + hash);
 		if (!copyfile(file.c_str(), tmp.c_str())) {
-			std::cout << "Error: Could not copy file " << file << ".\n";
+			std::cerr << "Error: Could not copy file " << file << ".\n";
 
 			emptyDirectory(repositoryPath("index"));
-			std::cout << "Index emptied.\n";
-			std::cout << "Please re-add the appropriate files to the index.\n";
+			std::cerr << "Index emptied.\n";
+			std::cerr << "Please re-add the appropriate files to the index.\n";
 
 			exit(1);
 		}
