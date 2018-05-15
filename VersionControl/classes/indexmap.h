@@ -285,9 +285,9 @@ template <class T> class basic_indexmapLoader {
 public:
 	T map;
 
-	basic_indexmapLoader(): m_location(repositoryPath(INDEXMAP_PATH)), map(T::loadFrom(m_location)) {}
-	basic_indexmapLoader(const char* c) : m_location(c), map(T::loadFrom(m_location)) {}
-	basic_indexmapLoader(const std::string& s) : m_location(s), map(T::loadFrom(m_location)) {}
+	basic_indexmapLoader(): m_location(repositoryPath(INDEXMAP_PATH)), map(T::loadFrom(repositoryPath(INDEXMAP_PATH))) {}
+	basic_indexmapLoader(const char* c) : m_location(c), map(T::loadFrom(c)) {}
+	basic_indexmapLoader(const std::string& s) : m_location(s), map(T::loadFrom(s)) {}
 	basic_indexmapLoader(basic_indexmapLoader&& il) : m_location(std::move(il.m_location)), map(std::move(il.map)) {
 		il.m_location = "";
 	}
