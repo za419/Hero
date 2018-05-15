@@ -302,10 +302,7 @@ void init() {
 
 // Next up, add.
 // Take the files in the provided vector, and copy them to the index
-void add(const std::vector<std::string>& files) {
-	IndexmapLoader imap_ldr;
-	Indexmap& imap(imap_ldr.map);
-
+void addFiles(const std::vector<std::string>& files, Indexmap& imap) {
 	std::string tmp;
 	std::string hash;
 	for (auto file : files) {
@@ -322,7 +319,7 @@ void add(const std::vector<std::string>& files) {
 
 				exit(2);
 			}
-			
+
 			// Add all files in the directory.
 			// First, make sure that the paths get prepended to the filenames
 			// Then recurse with the newly filled vector.
@@ -331,7 +328,7 @@ void add(const std::vector<std::string>& files) {
 			for (auto& fi : f) {
 				fi = file + fi;
 			}
-			add(f);
+			addFiles(f, imap);
 			continue;
 		}
 
@@ -349,6 +346,14 @@ void add(const std::vector<std::string>& files) {
 			exit(1);
 		}
 	}
+}
+
+// Master command for addFiles - Set up the Indexmap, and print out a success message.
+void add(const std::vector<std::string>& files) {
+	IndexmapLoader imap_ldr;
+	Indexmap& imap(imap_ldr.map);
+
+	addFiles(files, imap);
 
 	std::cout << "All files added to index.\n";
 }
