@@ -30,6 +30,7 @@ std::vector<std::string> split(std::string source, char delim = ' ') {
 
 		source.erase(0, i + 1);
 	}
+	out.push_back(source);
 	return out;
 }
 
@@ -44,6 +45,7 @@ std::vector<std::string> split(std::string source, std::string delim = " ") {
 
 		source.erase(0, i + 1);
 	}
+	out.push_back(source);
 	return out;
 }
 
