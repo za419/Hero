@@ -129,6 +129,9 @@ int contentsOfDirectory(std::string dir, std::vector<std::string>& out) {
 	dir += "\\*";
 	if ((hFind = FindFirstFile(dir.c_str(), &ffd)) != INVALID_HANDLE_VALUE) {
 		do {
+			// Skip directories . and ..
+			if (ffd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY && (std::string(ffd.cFileName)=="." || std::string(ffd.cFileName)==".."))
+				continue;
 			out.push_back(ffd.cFileName);
 		} while (FindNextFile(hFind, &ffd));
 		DWORD err(GetLastError());
