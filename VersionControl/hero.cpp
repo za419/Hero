@@ -332,6 +332,7 @@ void add(const std::vector<std::string>& files) {
 				fi = file + fi;
 			}
 			add(f);
+			continue;
 		}
 
 		hash = picosha2::hash256_hex_string(read);
