@@ -5,6 +5,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 std::string escaped(std::string source, const std::string& term, const std::string& replacement) {
 	size_t i(0);
@@ -15,6 +16,21 @@ std::string escaped(std::string source, const std::string& term, const std::stri
 		i += replacementLength;
 	}
 	return source;
+}
+
+// Splits a string into a vector by a delimiter
+std::vector<std::string> split(std::string source, char delim = ' ') {
+	size_t i;
+	std::vector<std::string> out;
+	while ((i = source.find(delim)) != std::string::npos) {
+		if (i)
+			out.push_back(source.substr(0, i));
+		else
+			out.push_back("");
+
+		source.erase(0, i + 1);
+	}
+	return out;
 }
 
 // Simple class, holds a dynamically allocated string whose lifecycle the class manages.
