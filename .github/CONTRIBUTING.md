@@ -180,36 +180,12 @@ the feature you're requesting, which includes all of:
 
 This section details, in fairly general turns, my plans for expanding the project.
 
-At the time of writing, version 0.02 has been released. This fits the following
+At the time of writing, version 0.03 has been released. This fits the following
 requirements:
 
- - [x] Can use `commit -a` to automatically add files that were in the last
-commit to the commit being made
+ - [x] File operations will support directories
 
- - [x] Can use `commit` with a list of files to automatically add these files
-and commit
-
- - [x] `log` will, starting at the HEAD, display all commits back to the initial
-commit
-
- - [x] `checkout` will, given a complete hash, or 'HEAD', overwrite the contents
-of applicable files with the versions in the given commit
-
-   - If this is given a commit besides the HEAD, the implementation should warn
-the user about making commits
-
-   - If this is given HEAD, it should remove that protection
-
-   - Checkout should confirm that what it checks out matches the committed
-SHA256, and issue a warning if there is a mismatch. This is not necessarily an
-error condition, but its worth warning about.
-
-Version 0.03 will include one major change:
-
- - [ ] File operations will support directories
-
-But may also include minor functionality upgrades to such components as argument
-parsing.
+Plus some performance performance improvements and a few bugfixes
 
 Version 0.04 will add support for:
 
