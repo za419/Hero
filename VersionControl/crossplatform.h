@@ -152,7 +152,9 @@ int contentsOfDirectory(std::string dir, std::vector<std::string>& out) {
 		while (ent = readdir(direc) != NULL) {
 			if (stat((dir + end->d_name).c_str(), &file_stat))
 				out.push_back(ent->d_name); // In case of error, assume regular file
-			if (S_ISREG(file_stat.st_mode) || S_ISDIR(file_stat.st_mode)) // Otherwise, only push regular files or directories
+			if (S_ISREG(file_stat.st_mode)) // Otherwise, only push regular files...
+				out.push_back(ent->d_name);
+			if (S_ISDIR(file_stat.st_mode) && std::string(ent->d_name) != "." && std::string(ent->d_name) != "..") // ... Or directories that aren't . or ..
 				out.push_back(ent->d_name);
 		}
 		closedir(dir);
