@@ -38,4 +38,15 @@ std::string hashOfFile(const std::string& filename) {
 	std::ifstream ifs(filename, std::ios::binary);
 	return hashOfFile(ifs);
 }
+
+// Specialize the hasher for an ifstream reference
+namespace picosha2 {
+	std::string hash256_hex_string(std::ifstream& ifs) {
+		return hashOfFile(ifs);
+	}
+
+	std::string hash256_hex_string(std::ifstream&& ifs) {
+		return hashOfFile(ifs);
+	}
+}
 #endif
