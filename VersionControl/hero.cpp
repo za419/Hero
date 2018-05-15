@@ -729,6 +729,23 @@ void checkout(std::string reference) {
 
 		// Unless skip is set, read the file in the commit out to disk
 		if (!skip) {
+			// If the filename includes a directory mark, we need to go through it and make sure the directory exists before performing checkout.
+			if (filename.find('/')!=std::string::npos || filename.find('\\') != std::string::npos) {
+				// Split the path into a list of directories
+				std::vector<std::string> parts;
+				if (filename.find("/"))
+					parts = split(filename, '/');
+				else
+					parts = split(filename, '\\');
+
+				// And then make all those directories (except the last one, which is a filename)
+				std::string path;
+				for (size_t i = 0; i < parts.size() - 1; ++i) {
+					path += parts[i] + '/';
+					mkdir(path.c_str());
+				}
+			}
+
 			std::fstream file(filename, std::ios::in | std::ios::out | std::ios::binary | std::ios::trunc);
 			if (!file) {
 				std::cerr << "Unable to open file " << filename << " for writing.\n";
