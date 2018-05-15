@@ -313,7 +313,7 @@ void add(const std::vector<std::string>& files) {
 		if (!read) {
 			// If a provided file is not a file, then try to treat it as a directory
 			std::vector<std::string> f;
-			if (filesInDirectory(file, f)) {
+			if (contentsOfDirectory(file, f)) {
 				std::cerr << "Error: Could not index file " << file << ".\n";
 
 				emptyDirectory(repositoryPath("index"));
