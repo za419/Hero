@@ -700,10 +700,33 @@ void log() {
 //  - HEAD (which shall be resolved to the complete hash of the current head commit)
 void checkout(std::string reference) {
 	auto head = getHeadHash(); // For the lockout warning
+	std::vector<std::string> branches;
+
+	if (filesInDirectory(repositoryPath("branches/"), branches)) {
+		// Not necessarily an error condition (we could have a hash)
+		// But definitely a warning condition
+		std::cerr << "Warning: Cannot list branches.\n";
+		std::cerr << "Checkout may fail unexpectedly if " << reference << " is a branch name.\n";
+		std::cerr << "Please ensure that your " << REPOSITORY_PATH << " directory exists and is accessible.\n";
+	}
 
 	if (reference == "HEAD") {
 		reference = head;
 		remove(repositoryPath("COMMIT_LOCK")); // Delete the lock file
+	}
+	else if (std::find(branches.begin(), branches.end(), reference) != branches.end()) {
+		// Branch head checkout
+		// Set target branch as current
+		std::ofstream head(repositoryPath("HEAD"), std::ios::trunc);
+		head << reference << '\n';
+		head.close();
+
+		// Set reference to check out the HEAD of the now-current branch
+		std::ifstream branch(repositoryPath("branches/" + reference));
+		std::getline(branch, reference);
+
+		// Delete lock file
+		remove(repositoryPath("COMMIT_LOCK"));
 	}
 	else if (reference != head) {
 		// Create the lock file
