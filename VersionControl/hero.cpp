@@ -295,6 +295,16 @@ void init() {
 		std::cerr << "Could not initialize repository.\n";
 		exit(1);
 	}
+	head << "master" << "\n";
+	head.close();
+
+	// And now write the master branch head marker
+	head.open(branchHead());
+	if (!head) {
+		removeDirectory(REPOSITORY_PATH);
+		std::cerr << "Could not initialize repository.\n";
+		exit(1);
+	}
 	head << hash << "\n";
 	head.close();
 
