@@ -241,6 +241,7 @@ void init() {
 	mkdir(REPOSITORY_PATH.c_str());
 	mkdir(repositoryPath("index"));
 	mkdir(repositoryPath("commits"));
+	mkdir(repositoryPath("branches"));
 
 	std::ofstream indexmap(INDEXMAP_PATH);
 
