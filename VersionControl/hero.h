@@ -18,15 +18,20 @@ CStr repositoryPath(const std::string& filename) {
 	return appended(REPOSITORY_PATH, "/"+filename);
 }
 
-std::string getHeadHash() {
+// Returns a path to the file in which the branch HEAD hash is stored
+std::string branchHead() {
 	std::ifstream HEAD(repositoryPath("HEAD"));
 	if (!HEAD)
 		return "";
 	std::string out;
 	std::getline(HEAD, out);
 	HEAD.close();
+	return repositoryPath("branches/"+out);
+}
 
-	HEAD.open(repositoryPath("branches/").asStdString() + out);
+std::string getHeadHash() {
+	std::ifstream HEAD(branchHead());
+	std::string out;
 	std::getline(HEAD, out);
 	return out;
 }
