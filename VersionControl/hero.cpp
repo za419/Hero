@@ -37,9 +37,9 @@ void usage(char* invoke, Command source) {
 
 	switch (source) {
 	case Command::init:
-		std::cout << invoke << " init\n";
+		std::cout << invoke << " init [branchname]\n";
 		std::cout << "Initializes a new repository in the current folder.\n";
-		std::cout << "No arguments are required or allowed.\n";
+		std::cout << "Creates the single default branch as branchname if passed, or master.\n";
 		break;
 	case Command::add:
 		std::cout << invoke << " add [files]\n";
@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
 	else if (!strcmp(argv[1], "init")) {
 		mode = Command::init;
 
-		if (argc > 2) {
+		if (argc > 3) {
 			usage(argv[0], Command::init);
 		}
 	}
@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
 		// I'm making this available, but at least for now not publicly documenting it
 		std::string arguments("hero-repofix");
 		// Go through the arguments we got after repofix, adding them to the string, so we can call repofix correctly
-		// At least for now, this is pretty much useless, since repofix can only be fixed with exactly one argument
+		// At least for now, this is pretty much useless, since repofix can only be called with exactly one argument
 		// But I don't think I'll be touching this again, so...
 		// I intend to write this so that I'll never need to.
 		for (int i = 2; i < argc; ++i) {
@@ -176,7 +176,11 @@ int main(int argc, char* argv[]) {
 	switch (mode) {
 		case Command::init:
 		{
-			init();
+			// Initialize with either a given default branchname, or "master"
+			if (argc == 3)
+				init(argv[2]);
+			else
+				init("master");
 			break;
 		}
 		case Command::add:
@@ -237,7 +241,7 @@ int main(int argc, char* argv[]) {
 
 // First, the easiest and always-run command: init.
 // Initialize all the files the other commands assume to exist.
-void init() {
+void init(const std::string& defaultBranch) {
 	mkdir(REPOSITORY_PATH.c_str());
 	mkdir(repositoryPath("index"));
 	mkdir(repositoryPath("commits"));
@@ -295,7 +299,7 @@ void init() {
 		std::cerr << "Could not initialize repository.\n";
 		exit(1);
 	}
-	head << "master" << "\n";
+	head << defaultBranch << "\n";
 	head.close();
 
 	// And now write the master branch head marker
