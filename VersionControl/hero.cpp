@@ -535,7 +535,7 @@ void commit() {
 	}
 	// Else, update the HEAD marker to match this commit
 	else {
-		std::ofstream head(repositoryPath("HEAD"), std::ios::trunc);
+		std::ofstream head(branchHead(), std::ios::trunc);
 		if (!head) {
 			remove(repositoryPath("commits/" + hash));
 			std::cerr << "Could not create commit.\n";
