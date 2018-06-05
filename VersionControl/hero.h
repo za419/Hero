@@ -25,6 +25,9 @@ std::string getHeadHash() {
 	std::string out;
 	std::getline(HEAD, out);
 	HEAD.close();
+
+	HEAD.open(repositoryPath("branches/").asStdString() + out);
+	std::getline(HEAD, out);
 	return out;
 }
 
