@@ -69,6 +69,16 @@ void usage(char* invoke, Command source) {
 		std::cout << "  2. HEAD\n";
 		std::cout << "Any other input is considered an error.\n";
 		break;
+	case Command::branch:
+		std::cout << invoke << "branch <name> [reference] [-c]\n";
+		std::cout << "Creates a new branch with the given name, with the current head commit as branch tip.\n";
+		std::cout << "If the branch already exists, will ask for confirmation as to whether the branch tip should be overwritten.\n";
+		std::cout << "If \'-c\' is present, the newly-created branch will be checked out immediately.\n";
+		std::cout << "If \"reference\" is given, it must follow the branch name.\n";
+		std::cout << "reference can be anything which may be passed to \"checkout\" (see " << invoke << " checkout -h).\n";
+		std::cout << "reference shall then be the branch tip of the newly created branch.\n";
+		std::cout << "If \'-c\' is not given, then the HEAD at the time of invocation shall be the HEAD after invocation.\n";
+		break;
 	case Command::unknownCommand:
 	default:
 		std::cout << invoke << " init\n";
