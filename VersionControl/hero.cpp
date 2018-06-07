@@ -20,7 +20,7 @@
 #include <cctype>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
-enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log, checkout };
+enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log, checkout, branch, branchCheckout, branchReference, branchCheckoutReference };
 
 // Function declarations for running commands
 void init(const std::string&);
@@ -30,6 +30,7 @@ void commitLast();
 void commitFiles(const std::vector<std::string>&);
 void log();
 void checkout(std::string);
+void branchReference(const std::string&, const std::string&);
 
 // Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
