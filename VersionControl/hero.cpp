@@ -758,7 +758,8 @@ void log() {
 // Given a commit (reference), copies files out to the working directory from the commit.
 // Reference can be one of:
 //  - A complete hash
-//  - HEAD (which shall be resolved to the complete hash of the current head commit)
+//  - A branch name
+//  - HEAD (which shall be resolved to the complete hash of the head commit of the most recent branch)
 void checkout(std::string reference) {
 	auto head = getHeadHash(); // For the lockout warning
 	std::vector<std::string> branches;
