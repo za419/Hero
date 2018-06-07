@@ -23,7 +23,7 @@
 enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log, checkout };
 
 // Function declarations for running commands
-void init();
+void init(const std::string&);
 void add(const std::vector<std::string>&);
 void commit();
 void commitLast();
