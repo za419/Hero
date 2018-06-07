@@ -263,7 +263,11 @@ int main(int argc, char* argv[]) {
 		}
 		case Command::branch:
 		{
-			branchReference(argv[2], getHeadHash());
+			std::string current(getHeadHash());
+			if (std::ifstream lock = std::ifstream(repositoryPath("COMMIT_LOCK"), std::ios::binary)) { // Account for detached status
+				std::getline(lock, current);
+			}
+			branchReference(argv[2], current);
 			break;
 		}
 		case Command::branchReference:
@@ -274,7 +278,11 @@ int main(int argc, char* argv[]) {
 		case Command::branchCheckout:
 		{
 			size_t index(strcmp(argv[2], "-c") ? 2 : 3); // Index of branch name
-			branchReference(argv[index], getHeadHash());
+			std::string current(getHeadHash());
+			if (std::ifstream lock = std::ifstream(repositoryPath("COMMIT_LOCK"), std::ios::binary)) { // Account for detached status
+				std::getline(lock, current);
+			}
+			branchReference(argv[index], current);
 			checkout(argv[index]); // Use standard checkout mechanism to get to our new branch
 			break;
 		}
