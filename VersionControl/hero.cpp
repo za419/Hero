@@ -284,6 +284,7 @@ int main(int argc, char* argv[]) {
 			size_t refindex(strcmp(argv[index + 1], "-c") ? index + 1 : index + 2); // Index of reference (can either be right after or two after branch name)
 			branchReference(argv[index], argv[refindex]);
 			checkout(argv[index]); // Use standard checkout mechanism to get to our new branch
+			break;
 		}
 		default:
 		{
