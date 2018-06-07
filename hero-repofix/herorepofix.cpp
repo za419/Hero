@@ -29,9 +29,46 @@ void usage(const char* invoke) {
 }
 
 void upgradeFrom(const std::string& source) {
-	if (source == "0.03.0") {
+	if (source == "0.04.0") {
 		// Upgrade this version to itself. Do nothing
 		exit(0);
+	}
+	else if (source == "0.03.0") {
+		// Alter the repository to use a branch structure.
+		std::string branchname;
+		std::cout << "Please enter a name for the default branch (leave empty for default): ";
+		std::cout.flush();
+		std::getline(std::cin, branchname);
+		if (branchname.empty()) { // Default branchname to "master"
+			branchname = "master";
+			std::cerr << "Defaulting branch name to \"master\".\n";
+		}
+
+		// Get current head commit
+		std::string commit;
+		std::ifstream h(repositoryPath("HEAD"));
+		if (!h) {
+			std::cerr << "Unable to examine repository head.\n";
+			std::cerr << "Could not upgrade repository past 0.03.0.\n";
+			exit(1);
+		}
+		std::getline(h, commit);
+
+		// Write branchname to head
+		std::ofstream HEAD(repositoryPath("HEAD"), std::ios::out | std::ios::trunc);
+		HEAD << branchname << "\n";
+		HEAD.close();
+
+		// Create branches directory
+		mkdir(repositoryPath("branches/"));
+
+		// Write branch reference to branches
+		HEAD.open(repositoryPath("branches/" + branchname));
+		HEAD << commit << '\n';
+		HEAD.close();
+
+		// Upgrade from the next version
+		upgradeFrom("0.04.0");
 	}
 	else if (source == "0.02.2") {
 		// There isn't a different in the commit format or directory structures.
