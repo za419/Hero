@@ -66,7 +66,8 @@ void usage(char* invoke, Command source) {
 		std::cout << "Checks out the files committed in the referenced commit.\n";
 		std::cout << "<reference> can be any of:\n";
 		std::cout << "  1. The hash of the commit to check out\n";
-		std::cout << "  2. HEAD\n";
+		std::cout << "  2. The name of a valid branch.\n";
+		std::cout << "  3. HEAD (for the most recently checked out branch)\n";
 		std::cout << "Any other input is considered an error.\n";
 		break;
 	case Command::branch:
