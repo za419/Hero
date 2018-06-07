@@ -20,7 +20,7 @@
 #include <cctype>
 
 // Internal codes for commands which we know how to handle, plus an error code (unknownCommand)
-enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log, checkout, branch, branchCheckout, branchReference, branchCheckoutReference };
+enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, commitFiles, log, checkout, branch, branchCheckout, branchReference, branchCheckoutReference, branchList };
 
 // Function declarations for running commands
 void init(const std::string&);
@@ -31,6 +31,7 @@ void commitFiles(const std::vector<std::string>&);
 void log();
 void checkout(std::string);
 void branchReference(const std::string&, const std::string&);
+void branchList();
 
 // Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
@@ -71,8 +72,9 @@ void usage(char* invoke, Command source) {
 		std::cout << "Any other input is considered an error.\n";
 		break;
 	case Command::branch:
-		std::cout << invoke << "branch <name> [reference] [-c]\n";
-		std::cout << "Creates a new branch with the given name, with the current head commit as branch tip.\n";
+		std::cout << invoke << "branch [name] [reference] [-c]\n";
+		std::cout << "If no arguments are given, prints a list of branchnames.\n";
+		std::cout << "If arguments are given, creates a new branch with the given name, with the current head commit as branch tip.\n";
 		std::cout << "If the branch already exists, will ask for confirmation as to whether the branch tip should be overwritten.\n";
 		std::cout << "If \'-c\' is present, the newly-created branch will be checked out immediately.\n";
 		std::cout << "If \"reference\" is given, it must follow the branch name.\n";
