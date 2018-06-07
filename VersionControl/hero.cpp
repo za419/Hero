@@ -944,3 +944,79 @@ void checkout(std::string reference) {
 	std::cout << "commit said we were supposed to read " << size << " bytes from files.\n";
 	std::cout << "We actually read " << totalSize << " bytes from files.\n";
 }
+
+// Given a branchname and a commit (reference), mark that commit as the tip of a new branch with the given name
+// Reference can be anything that checkout understands.
+void branchReference(const std::string& branchname, const std::string& ref) {
+	std::vector<std::string> branches;
+	std::string reference;
+
+	if (filesInDirectory(repositoryPath("branches/"), branches)) {
+		// Not necessarily an error condition (we could have a hash)
+		// But definitely a warning condition
+		std::cerr << "Warning: Cannot list branches.\n";
+		std::cerr << "Creation may fail unexpectedly if " << ref << " is a branch name.\n";
+		std::cerr << "Please ensure that your " << REPOSITORY_PATH << " directory exists and is accessible.\n";
+	}
+
+	if (ref == "HEAD") {
+		reference = getHeadHash();
+	}
+	else if (std::find(branches.begin(), branches.end(), ref) != branches.end()) {
+		// If we're given a branch...
+		// Set reference to be the HEAD of the given branch
+		std::ifstream branch(repositoryPath("branches/" + ref));
+		std::getline(branch, reference);
+	}
+	// Else, assume it's a hash.
+
+	// Confirm that reference now refers to a valid commit
+	branches.clear(); // Variable reuse
+	if (filesInDirectory(repositoryPath("commits/"), branches)) {
+		// Error out if we can't list commits
+		// (Definitely do not create a bad branch, that could break things even more)
+		std::cerr << "Cannot find reference " << ref << ".\n";
+		std::cerr << "Repository may be improperly configured... Have you run init?\n";
+		exit(1);
+	}
+
+	if (std::find(branches.begin(), branches.end(), ref) != branches.end()) {
+		// Commit does not exist
+		std::cerr << "Cannot find reference " << ref << ".\n";
+		exit(2);
+	}
+
+	// Reference is a hash referring to a valid commit.
+	// If branchname is already a branch, get confirmation before proceeding
+	std::ifstream prior(repositoryPath("branches/" + branchname));
+	std::string prev;
+	if (prior) {
+		std::cerr << "Warning: Branch " << branchname << " already exists.\n";
+		std::getline(prior, prev);
+		std::cerr << "(current tip at " << prev << ".)\n";
+		char ans = '\0';
+		while (ans != 'y' && ans != 'n' && ans != '\n') {
+			std::cout << "Are you sure you would like to overwrite it (y/N)? ";
+			ans = tolower(std::cin.get());
+			std::cin.ignore(1);
+			std::cout << std::endl;
+		}
+		if (ans != 'y') {
+			std::cerr << "Aborted branch creation.\n";
+			exit(3);
+		}
+	}
+
+	// Create or overwrite branch
+	std::ofstream branch(repositoryPath("branches/" + branchname), std::ios::out | std::ios::trunc);
+	branch << reference << '\n';
+	branch.close();
+
+	// Print success message (dependent on whether this was an overwrite)
+	if (prior) {
+		std::cout << "Overwrote branch " << branchname << " (was " << prev << ").\n";
+	}
+	else {
+		std::cout << "Successfuly created branch " << branchname << ".\n";
+	}
+}
