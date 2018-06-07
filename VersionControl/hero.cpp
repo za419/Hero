@@ -256,6 +256,16 @@ int main(int argc, char* argv[]) {
 			checkout(argv[2]);
 			break;
 		}
+		case Command::branch:
+		{
+			branchReference(argv[2], getHeadHash());
+			break;
+		}
+		case Command::branchReference:
+		{
+			branchReference(argv[2], argv[3]);
+			break;
+		}
 		default:
 		{
 			std::cerr << "Unrecognized commandline:";
