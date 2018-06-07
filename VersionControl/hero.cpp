@@ -266,6 +266,13 @@ int main(int argc, char* argv[]) {
 			branchReference(argv[2], argv[3]);
 			break;
 		}
+		case Command::branchCheckout:
+		{
+			size_t index(strcmp(argv[2], "-c") ? 2 : 3); // Index of branch name
+			branchReference(argv[index], getHeadHash());
+			checkout(argv[index]); // Use standard checkout mechanism to get to our new branch
+			break;
+		}
 		default:
 		{
 			std::cerr << "Unrecognized commandline:";
