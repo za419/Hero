@@ -286,6 +286,11 @@ int main(int argc, char* argv[]) {
 			checkout(argv[index]); // Use standard checkout mechanism to get to our new branch
 			break;
 		}
+		case Command::branchList:
+		{
+			branchList();
+			break;
+		}
 		default:
 		{
 			std::cerr << "Unrecognized commandline:";
