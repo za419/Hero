@@ -144,8 +144,11 @@ int main(int argc, char* argv[]) {
 	else if (!strcmp(argv[1], "branch")) {
 		mode = Command::branch;
 
-		if (argc < 3 || !strcmp(argv[2], "-h") || argc>5) {
+		if ((argc>2 && !strcmp(argv[2], "-h")) || argc>5) {
 			usage(argv[0], Command::branch);
+		}
+		else if (argc == 2) {
+			mode = Command::branchList;
 		}
 		else if (argc == 4) {
 			if (!strcmp(argv[2], "-c") || !strcmp(argv[3], "-c")) {
