@@ -1031,3 +1031,41 @@ void branchReference(const std::string& branchname, const std::string& ref) {
 		std::cout << "Successfuly created branch " << branchname << ".\n";
 	}
 }
+
+// Prints a list of branches, marking the current one with an asterisk iff COMMIT_LOCK isn't present
+// If COMMIT_LOCK is present, print a shortened version of the detached HEAD
+void branchList() {
+	std::vector<std::string> branches;
+	if (filesInDirectory(repositoryPath("branches/"), branches)) {
+		std::cerr << "Cannot read list of branches.\n";
+		exit(1);
+	}
+
+	// Get current branch
+	std::ifstream HEAD(repositoryPath("HEAD"));
+	std::string current;
+	std::getline(HEAD, current);
+	HEAD.close();
+
+	// Check for detached state
+	HEAD.open(repositoryPath("COMMIT_LOCK"), std::ios::binary);
+	if (HEAD) {
+		// We're detached.
+		std::getline(HEAD, current);
+		HEAD.close();
+
+		// Print out our detached HEAD
+		std::cout << "* HEAD (detached; at " << current.substr(0, 10) << '\n'; // 10 should be enough characters
+
+		current = ""; // Just in case someone wanted to name their branch after a commit... For some stupid reason
+		// (checkout doesn't work in this case, but it's easy enough to make this work)
+	}
+
+	// Print out all of our branches, checking to see if they're equal to current
+	for (const auto& branch : branches) {
+		if (branch == current) {
+			std::cout << "* ";
+		}
+		std::cout << branch << '\n';
+	}
+}
