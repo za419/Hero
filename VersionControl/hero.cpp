@@ -139,6 +139,27 @@ int main(int argc, char* argv[]) {
 			usage(argv[0], Command::checkout);
 		}
 	}
+	else if (!strcmp(argv[1], "branch")) {
+		mode = Command::branch;
+
+		if (argc < 3 || !strcmp(argv[2], "-h") || argc>5) {
+			usage(argv[0], Command::branch);
+		}
+		else if (argc == 4) {
+			if (!strcmp(argv[2], "-c") || !strcmp(argv[3], "-c")) {
+				// Branch and checkout
+				mode = Command::branchCheckout;
+			}
+			else {
+				// Branch on reference
+				mode = Command::branchReference;
+			}
+		}
+		else if (argc == 5) {
+			// Branch on reference and checkout
+			mode == Command::branchCheckoutReference;
+		}
+	}
 	else if (!strcmp(argv[1], "init")) {
 		mode = Command::init;
 
