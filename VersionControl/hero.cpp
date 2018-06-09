@@ -1031,6 +1031,15 @@ void branchReference(const std::string& branchname, const std::string& ref) {
 	branch << reference << '\n';
 	branch.close();
 
+	// If the new branch tip was the detached head, remove the commit lock
+	if (std::ifstream lock = std::ifstream(repositoryPath("COMMIT_LOCK"))) {
+		std::string loc;
+		std::getline(lock, loc);
+		if (loc == reference) {
+			remove(repositoryPath("COMMIT_LOCK"));
+		}
+	}
+
 	// Print success message (dependent on whether this was an overwrite)
 	if (prior) {
 		std::cout << "Overwrote branch " << branchname << " (was " << prev << ").\n";
