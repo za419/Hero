@@ -32,6 +32,7 @@ void log();
 void checkout(std::string);
 void branchReference(const std::string&, const std::string&);
 void branchList();
+void merge(const std::string&, const std::string&);
 
 // Issue the usage message appropriate to the command being run, with the command we were invoked with
 void usage(char* invoke, Command source) {
@@ -316,6 +317,11 @@ int main(int argc, char* argv[]) {
 		case Command::branchList:
 		{
 			branchList();
+			break;
+		}
+		case Command::merge:
+		{
+			merge(argv[2], argv[3]);
 			break;
 		}
 		default:
