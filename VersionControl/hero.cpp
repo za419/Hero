@@ -184,6 +184,13 @@ int main(int argc, char* argv[]) {
 			usage(argv[0], Command::init);
 		}
 	}
+	else if (!strcmp(argv[1], "merge")) {
+		mode = Command::merge;
+
+		if (argc != 4) {
+			usage(argv[0], Command::merge);
+		}
+	}
 	else if (!strcmp(argv[1], "repofix")) {
 		// Skip all the mode stuff, just run hero-repofix
 		// I'm making this available, but at least for now not publicly documenting it
