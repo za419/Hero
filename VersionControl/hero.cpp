@@ -82,6 +82,18 @@ void usage(char* invoke, Command source) {
 		std::cout << "reference shall then be the branch tip of the newly created branch.\n";
 		std::cout << "If \'-c\' is not given, then the HEAD at the time of invocation shall be the HEAD after invocation.\n";
 		break;
+	case Command::merge:
+		std::cout << invoke << " merge ref1 ref2\n";
+		std::cout << "Attempts to merge ref1 and ref2 into a single commit with two parents.\n";
+		std::cout << "Currently supports only one merge algorithm, which proceeds to merge each file\n";
+		std::cout << "  individually, under the following rules:\n";
+		std::cout << "    1. If a file has the same hash in both commits, it is added to the new commit.\n";
+		std::cout << "    2. If one commit has an ancestor where the file is present with the same\n";
+		std::cout << "       hash as in the other commit, the version from the first is kept.\n";
+		std::cout << "    3. If a file in one commit is empty, and nonempty in the other,\n";
+		std::cout << "       the nonempty version is kept.\n";
+		std::cout << "    4. If no above rule resolves a file, the user will be asked to choose.\n";
+		break;
 	case Command::unknownCommand:
 	default:
 		std::cout << invoke << " init\n";
