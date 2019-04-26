@@ -25,7 +25,7 @@ enum class Command : uint8_t { unknownCommand, init, add, commit, commitLast, co
 // Function declarations for running commands
 void init(const std::string&);
 void add(const std::vector<std::string>&);
-void commit();
+void commit(const std::string& mergeParent="");
 void commitLast();
 void commitFiles(const std::vector<std::string>&);
 void log();
@@ -476,7 +476,8 @@ void add(const std::vector<std::string>& files) {
 
 // Copy the files in the index into a commit file in the commits folder
 // This file will have its SHA256 as its filename, and will have formatting compatible with the format specified in commit-blob.txt
-void commit() {
+// If mergeParent is not the empty string, adds a merge parent with the given reference to the header.
+void commit(const std::string& mergeParent) {
 	bool detached(false);
 	std::string parent(getHeadHash());
 	if (parent == "") {
@@ -514,6 +515,11 @@ void commit() {
 
 	// Write parent hash
 	commit << "parent " << parent << "\n";
+
+	// Write merge parent hash if one was given
+	if (!mergeParent.empty()) {
+		commit << "mergeparent " << mergeParent << '\n';
+	}
 
 	// Write datetime using date
 	// Examples taken from the date documentation: https://howardhinnant.github.io/date/date.html
