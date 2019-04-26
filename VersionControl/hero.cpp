@@ -816,7 +816,7 @@ void checkout(std::string reference) {
 
 		// And issue a warning
 		std::cerr << "Warning: You are detached from the HEAD commit.\n";
-		std::cerr << "Commits made in this state will be lost forever unless you remember their hash.\n\n";
+		std::cerr << "Commits made in this state will be lost forever unless you remember their hash or create a new branch for them.\n\n";
 	}
 	else {
 		remove(repositoryPath("COMMIT_LOCK")); // Delete the lock file
