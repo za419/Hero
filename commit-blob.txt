@@ -1,6 +1,7 @@
 COMMIT HEADER
 &&&
 parent <SHA256>
+{mergeparent <SHA256> IFF MERGE COMMIT}
 date <date committed, yyyy-mm-dd>
 time <time committed, hh:mm:ss, 24-hour> UTC
 title <commit title, with all '&' replaced by '&amp;'>
