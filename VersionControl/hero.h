@@ -36,6 +36,36 @@ std::string getHeadHash() {
 	return out;
 }
 
+// Converts the reference into one 'printable' format.
+// In other words, attempt to make the reference as user-readable as possible
+// (c4053b238029d133b65efdea01d468db2a06cbb1fd0e550545e907daea27585c is not very user-friendly)
+std::string normalizeReference(std::string ref) {
+	// First, see if this is already in 'most-normal' form - A branch name
+	std::vector<std::string> branches;
+	if (filesInDirectory(repositoryPath("branches/"), branches)) {
+		// There is probably something bad going on here, but we shouldn't print an error for it.
+		// However, if we cannot read into the list of branches, we can't really do anything to our hash.
+		return ref;
+	}
+
+	if (std::find(branches.begin(), branches.end(), ref) == branches.end()) {
+		// ref is not a branch name.
+		// Check to see if ref is a branch head
+		const std::string prefix(repositoryPath("branches/"));
+		std::string line;
+		for (const auto& branch : branches) {
+			std::ifstream file(prefix + branch);
+			std::getline(file, line);
+			if (line == ref) {
+				// ref refers to this branch
+				ref = branch;
+				break;
+			}
+		}
+	}
+	return ref;
+}
+
 // Returns the SHA256 hash of the stream
 std::string hashOfFile(std::istream& ifs) {
 	return picosha2::hash256_hex_string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
