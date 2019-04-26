@@ -72,7 +72,7 @@ void usage(char* invoke, Command source) {
 		std::cout << "Any other input is considered an error.\n";
 		break;
 	case Command::branch:
-		std::cout << invoke << "branch [name] [reference] [-c]\n";
+		std::cout << invoke << " branch [name] [reference] [-c]\n";
 		std::cout << "If no arguments are given, prints a list of branchnames, marking the current one with an asterisk (*).\n";
 		std::cout << "If arguments are given, creates a new branch with the given name, with the current head commit as branch tip.\n";
 		std::cout << "If the branch already exists, will ask for confirmation as to whether the branch tip should be overwritten.\n";
