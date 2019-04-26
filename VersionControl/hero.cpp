@@ -1072,7 +1072,7 @@ void branchList() {
 		HEAD.close();
 
 		// Print out our detached HEAD
-		std::cout << "* HEAD (detached; at " << current.substr(0, 10) << '\n'; // 10 should be enough characters
+		std::cout << "* HEAD (detached; at " << current.substr(0, 10) << ")\n"; // 10 should be enough characters
 
 		current = ""; // Just in case someone wanted to name their branch after a commit... For some stupid reason
 		// (checkout doesn't work in this case, but it's easy enough to make this work)
