@@ -468,13 +468,14 @@ void commit() {
 		std::getline(lock, hash);
 
 		std::cerr << "Warning: You are in detached head state.\n";
-		std::cerr << "The head commit is " << parent << ".\n";
-		std::cerr << "The currently checked out commit is recorded as " << hash << ".\n";
-		std::cerr << "Committing in this state will not update the HEAD marker, and consequently\n";
-		std::cerr << "  any commit you might make here will not appear in logs and will only be\n";
-		std::cerr << "  reachable if you know their hash.\n";
+		std::cerr << "The head commit is " << normalizeReference(parent) << ".\n";
+		std::cerr << "The currently checked out commit is recorded as " << normalizeReference(hash) << ".\n";
+		std::cerr << "Committing in this state will not update any branch markers, and consequently\n";
+		std::cerr << "  any commit you might make here won't appear in their logs and will only be\n";
+		std::cerr << "  reachable if you know the commit's hash or make a new branch.\n";
 		std::cerr << "To avoid this, copy your work to another location, press Ctrl-C to stop commit,\n";
-		std::cerr << "  and run `checkout HEAD`. You can then copy your work back and commit.\n";
+		std::cerr << "  and run `checkout` with a branch name, or `branch -c` to create a new branch.\n";
+		std::cerr << "  can then copy your work back and commit.\n";
 
 		// Update parent hash to be the one we have checked out
 		parent = hash;
@@ -609,9 +610,9 @@ void commit() {
 
 	// If we're in a detached state, warn about not updating HEAD and print our hash
 	if (detached) {
-		std::cerr << "Warning: HEAD marker not updated: You are in a detached state.\n";
+		std::cerr << "Warning: No branch head updated: You are in a detached state.\n";
 		std::cerr << "This commit can be accessed in the future via its hash:\n";
-		std::cerr << hash << "\n";
+		std::cerr << normalizeReference(hash) << "\n";
 	}
 	// Else, update the HEAD marker to match this commit
 	else {
