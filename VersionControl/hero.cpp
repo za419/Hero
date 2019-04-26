@@ -1128,3 +1128,8 @@ void branchList() {
 		std::cout << branch << '\n';
 	}
 }
+
+// Merges together the two given references
+void merge(const std::string& ref1, const std::string& ref2) {
+
+}
