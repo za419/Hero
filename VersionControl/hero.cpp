@@ -769,6 +769,7 @@ void log() {
 			exit(1);
 		}
 		std::string line;
+		bool merge(false);
 
 		std::cout << "commit " << hash << "\n";
 
@@ -780,19 +781,28 @@ void log() {
 		std::getline(commit, line);
 		hash = line.substr(7); // There are 7 characters before the hash begins: "parent "
 
-		// The next line is the date
+		// The next line is the date...
 		std::getline(commit, line);
+		if (line.find("mergeparent ") == 0) {
+			merge = true;
+			std::getline(commit, line);
+		}
 		std::cout << "Committed on " << line.substr(5); // 5 characters: "date "
 
 		// And then the time
 		std::getline(commit, line);
 		std::cout << " at " << line.substr(5) << "\n"; // Again, 5 characters: "time "
 
-		// The title
+		// The title (with note prepended for merge commits)
 		std::getline(commit, line);
-		line = escaped(line.substr(6), "/amp;", "&");
+		line = escaped(line.substr(6), "/amp;", "&"); // 6 characters: "title "
 		line = escaped(line, "/sl;", "/");
-		std::cout << "\t" << line << "\n\n"; // 6 characters: "title "
+		if (merge) {
+			std::cout << "\t" << "(merge commit) " << line << "\n\n";
+		}
+		else {
+			std::cout << "\t" << line << "\n\n";
+		}
 
 		// And finally the message
 		std::getline(commit, line, '&'); // Discard the beginning
